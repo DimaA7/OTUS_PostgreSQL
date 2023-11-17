@@ -1,0 +1,200 @@
+CREATE TABLE student(
+  id serial,
+  fio char(100)
+);
+
+INSERT INTO student(fio) SELECT 'noname' FROM generate_series(1,500000);
+
+SELECT pg_size_pretty(pg_total_relation_size('student'));
+
+update student set fio = 'name';
+
+SELECT pg_size_pretty(pg_total_relation_size('student'));
+
+
+CREATE TABLE user_data (
+
+id serial PRIMARY KEY,
+
+username text,
+
+email text,
+
+status int
+
+);
+
+  
+
+INSERT INTO user_data (username, email, status) VALUES
+
+('user1', 'user1@example.com', 1),
+
+('user2', 'user2@example.com', 2),
+
+('user3', 'user3@example.com', 3),
+
+('user4', 'user4@example.com', 4),
+
+('user5', 'user5@example.com', 5);
+
+select pg_total_relation_size('user_data')
+
+SELECT pg_size_pretty(pg_total_relation_size('user_data'));
+
+  
+
+UPDATE user_data
+
+SET status = 0;
+
+  
+
+SELECT *, xmin,xmax,cmin,cmax,ctid from user_data
+
+  
+
+SELECT relname, n_live_tup, n_dead_tup, trunc(100*n_dead_tup/(n_live_tup+1))::float "ratio%", last_autovacuum FROM pg_stat_user_tables WHERE relname = 'user_data';
+
+  
+
+SELECT txid_current();
+
+SELECT 
+	'(0,'||lp||')' AS ctid, 
+	 CASE lp_flags 
+		 WHEN 0 THEN 'unused' 
+		 WHEN 1 THEN 'normal' 
+		 WHEN 2 THEN 'redirect to '||lp_off 
+		 WHEN 3 THEN 'dead' END AS state, 
+		 t_xmin as xmin, 
+		 t_xmax as xmax, 
+		 (t_infomask & 256) > 0 AS xmin_commited, 
+		 (t_infomask & 512) > 0 AS xmin_aborted, 
+		 (t_infomask & 1024) > 0 AS xmax_commited, 
+		 (t_infomask & 2048) > 0 AS xmax_aborted, t_ctid
+FROM heap_page_items(get_raw_page('user_data',0))
+
+  
+
+INSERT INTO user_data (username, email, status) VALUES
+
+('user6', 'user6@example.com', 6)
+
+SELECT *, xmin,xmax,cmin,cmax,ctid from user_data
+
+DELETE from user_data where id = 1
+
+  
+
+SELECT *, xmin,xmax,cmin,cmax,ctid from user_data
+
+  
+
+INSERT INTO user_data (username, email, status) VALUES
+
+('user7', 'user7@example.com', 6)
+
+UPDATE user_data
+
+SET status = 0
+
+where username = 'user7'
+
+CREATE EXTENSION pageinspect;
+
+SELECT lp as tuple, t_xmin, t_xmax, t_field3 as t_cid, t_ctid FROM heap_page_items(get_raw_page('user_data',0));
+
+SELECT * FROM heap_page_items(get_raw_page('user_data',0))
+
+BEGIN;
+
+UPDATE user_data
+
+SET status = 10
+
+WHERE username = 'user100';
+
+  
+
+commit;
+
+  
+
+SELECT *, xmin,xmax,cmin,cmax,ctid from user_data
+
+SELECT * FROM heap_page_items(get_raw_page('user_data',0))
+
+  
+
+rollback;
+
+  
+
+BEGIN;
+
+  
+
+INSERT INTO user_data (username, email, status) VALUES
+
+('user100', 'user100@example.com', 100)
+
+rollback
+
+  
+
+SELECT pg_relation_filepath('user_data');
+
+vacuum verbose user_data
+
+vacuum full
+
+  
+
+SELECT * FROM pg_stat_activity WHERE query ~ 'autovacuum'
+
+  
+
+CREATE TABLE student(
+
+id serial,
+
+fio char(100)
+
+) WITH (autovacuum_enabled = off);
+
+  
+
+INSERT INTO student(fio) SELECT 'noname' FROM generate_series(1,500000);
+
+  
+
+SELECT pg_size_pretty(pg_total_relation_size('student'));
+
+  
+
+update student set fio = 'name';
+
+  
+
+SELECT pg_size_pretty(pg_total_relation_size('student'));
+
+  
+
+SELECT relname, n_live_tup, n_dead_tup, trunc(100*n_dead_tup/(n_live_tup+1))::float "ratio%", last_autovacuum FROM pg_stat_user_tables WHERE relname = 'student';
+
+  
+
+SELECT *, xmin,xmax,cmin,cmax,ctid from student
+
+  
+
+SELECT * FROM pg_stat_progress_vacuum;
+
+  
+
+ALTER TABLE student SET (autovacuum_enabled = on);
+
+  
+
+vacuum full student
