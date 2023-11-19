@@ -16,7 +16,7 @@
 # Проверка pgbench
 
 ## Запуск pgbench на ВМ1 с SSD кластер main15 без настроек
-dima-a7@otus-db-pg-vm-1:~$ pgbench -c8 -P 6 -T 60 -p 5432 postgres
+dima@otus-db-pg-vm-1:~$ pgbench -c8 -P 6 -T 60 -p 5432 postgres
 pgbench (15.2 (Ubuntu 15.2-1.pgdg22.04+1))
 starting vacuum...end.
 progress: 6.0 s, 531.8 tps, lat 14.984 ms stddev 9.387, 0 failed
@@ -42,10 +42,10 @@ latency average = 15.504 ms
 latency stddev = 12.565 ms
 initial connection time = 15.592 ms
 tps = 515.891460 (without initial connection time)
-dima-a7@otus-db-pg-vm-1:~$
+dima@otus-db-pg-vm-1:~$
 
 ## Запуск pgbench на ВМ1 с SSD кластер main15 c целевыми настройками
-dima-a7@otus-db-pg-vm-1:~$ pgbench -c8 -P 6 -T 60 -p 5432 postgres
+dima@otus-db-pg-vm-1:~$ pgbench -c8 -P 6 -T 60 -p 5432 postgres
 pgbench (15.2 (Ubuntu 15.2-1.pgdg22.04+1))
 starting vacuum...end.
 progress: 6.0 s, 321.7 tps, lat 24.743 ms stddev 24.910, 0 failed
@@ -79,7 +79,7 @@ vCPU - 2
 RAM 4
 SSD: 18 ГБ
 
-dima-a7@otus-db-pg-vm-1:~$   pgbench -i postgres -p 5433
+dima@otus-db-pg-vm-1:~$   pgbench -i postgres -p 5433
 dropping old tables...
 NOTICE:  table "pgbench_accounts" does not exist, skipping
 NOTICE:  table "pgbench_branches" does not exist, skipping
@@ -93,7 +93,7 @@ creating primary keys...
 done in 2.17 s (drop tables 0.00 s, create tables 0.07 s, client-side generate 1.76 s, vacuum 0.06 s, primary keys 0.29 s).
 
 
-dima-a7@otus-db-pg-vm-1:~$  pgbench -i postgres -p 5433
+dima@otus-db-pg-vm-1:~$  pgbench -i postgres -p 5433
 dropping old tables...
 creating tables...
 generating data (client-side)...
@@ -103,7 +103,7 @@ creating primary keys...
 done in 1.02 s (drop tables 0.02 s, create tables 0.01 s, client-side generate 0.68 s, vacuum 0.04 s, primary keys 0.28 s).
 
 ## Запуск pgbench на ВМ1 с SSD без настроек
-dima-a7@otus-db-pg-vm-1:~$ pgbench -c 8 -P 6 -T 60 -p 5433 postgres
+dima@otus-db-pg-vm-1:~$ pgbench -c 8 -P 6 -T 60 -p 5433 postgres
 pgbench (15.2 (Ubuntu 15.2-1.pgdg22.04+1))
 starting vacuum...end.
 progress: 6.0 s, 665.5 tps, lat 11.981 ms stddev 6.742, 0 failed
@@ -211,7 +211,7 @@ vCPU - 2
 RAM 4
 SSD: 18 ГБ
 
-dima-a7@otus-db-pg-vm-2:~$ pgbench -i postgres -p 5432
+dima@otus-db-pg-vm-2:~$ pgbench -i postgres -p 5432
 dropping old tables...
 NOTICE:  table "pgbench_accounts" does not exist, skipping
 NOTICE:  table "pgbench_branches" does not exist, skipping
@@ -225,7 +225,7 @@ creating primary keys...
 done in 0.75 s (drop tables 0.00 s, create tables 0.20 s, client-side generate 0.18 s, vacuum 0.14 s, primary keys 0.22 s).
 
 ## Запуск phbench на ВМ2 c HDD с настройками по умолчанию
-dima-a7@otus-db-pg-vm-2:~$ pgbench -c 8 -P 6 -T 60 -p 5432 postgres
+dima@otus-db-pg-vm-2:~$ pgbench -c 8 -P 6 -T 60 -p 5432 postgres
 pgbench (15.2 (Ubuntu 15.2-1.pgdg22.04+1))
 starting vacuum...end.
 progress: 6.0 s, 684.3 tps, lat 11.650 ms stddev 5.974, 0 failed
@@ -286,7 +286,7 @@ postgres=# SELECT sourceline, name, setting, applied FROM pg_file_settings;
 ## Запуск phbench на ВМ2 c HDD после применения целевых настроек
 
 
-dima-a7@otus-db-pg-vm-2:~$ pgbench -c 8 -P 6 -T 60 -p 5432 postgres
+dima@otus-db-pg-vm-2:~$ pgbench -c 8 -P 6 -T 60 -p 5432 postgres
 pgbench (15.2 (Ubuntu 15.2-1.pgdg22.04+1))
 starting vacuum...end.
 progress: 6.0 s, 346.5 tps, lat 22.980 ms stddev 19.706, 0 failed
@@ -465,8 +465,8 @@ avc=# SELECT relname, n_live_tup, n_dead_tup, trunc(100*n_dead_tup/(n_live_tup+1
 (1 row)
 
 ## Новый размер файла:
-dima-a7@otus-db-pg-vm-1:~$ sudo su postgres
-postgres@otus-db-pg-vm-1:/home/dima-a7$  cd /var/lib/postgresql/15/main15/base/16563
+dima@otus-db-pg-vm-1:~$ sudo su postgres
+postgres@otus-db-pg-vm-1:/home/dima$  cd /var/lib/postgresql/15/main15/base/16563
 postgres@otus-db-pg-vm-1:~/15/main15/base/16563$ stat 16593
   File: 16593
   Size: 808206336       Blocks: 1578536    IO Block: 4096   regular file

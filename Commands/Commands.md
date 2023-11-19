@@ -48,6 +48,18 @@ Are you sure you want to continue connecting (yes/no)?
 
 sudo -u postgres psql
 
+# Создать кластер:
+sudo /usr/pgsql-15/bin/postgresql-15-setup initdb
+
+# Запустить PostgreSQL
+sudo systemctl start postgresql-12
+
+# Enable PostgreSQL Launch on Reboot
+sudo systemctl enable postgresql-12
+
+-- посмотрим, что кластер стартовал
+/usr/pgsql-12/bin/pg_ctl status
+/usr/pgsql-12/bin/pg_ctl --help
 
 # Работа с yandex облаком
 
@@ -76,13 +88,13 @@ Credential helper is configured in 'C:\Users\dima-\.docker\config.json'
 C:\Users\dima-\.docker
 
 # Создать пльзователя, дать права
-CREATE ROLE "dima-a7" PASSWORD 'testpass' LOGIN;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "dima-a7";
-GRANT ALL PRIVILEGES ON DATABASE postgres to "dima-a7";
+CREATE ROLE "dima" PASSWORD 'testpass' LOGIN;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "dima";
+GRANT ALL PRIVILEGES ON DATABASE postgres to "dima";
 select * from pg_user;
 ## Права на схему
-GRANT USAGE ON SCHEMA public TO "dima-a7";
-GRANT CREATE ON SCHEMA public TO "dima-a7";
+GRANT USAGE ON SCHEMA public TO "dima";
+GRANT CREATE ON SCHEMA public TO "dima";
 
 [Как работать с пользователями в PostgreSQL](https://www.dmosk.ru/miniinstruktions.php?mini=postgresql-users)
 
@@ -121,7 +133,7 @@ postgres=# SHOW data_directory;
 (1 row)
 
 
-postgres@otus-db-pg-vm-2:/home/dima-a7$ cd /etc/postgresql/15/main/
+postgres@otus-db-pg-vm-2:/home/dima$ cd /etc/postgresql/15/main/
 postgres@otus-db-pg-vm-2:/etc/postgresql/15/main$ nano  postgresql.conf
 
 https://sysadminium.ru/postgresql_configuration_methods/

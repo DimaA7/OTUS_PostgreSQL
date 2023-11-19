@@ -65,7 +65,7 @@ wal_buffers	512	8kB
 work_mem	4096	kB
 
    ## Тест
-        dima-a7@otus:~$ pgbench -c 50 -P 6 -T 60 -j 2 -p 5432 sakila
+        dima@otus:~$ pgbench -c 50 -P 6 -T 60 -j 2 -p 5432 sakila
         pgbench (15.5 (Ubuntu 15.5-1.pgdg22.04+1))
         starting vacuum...end.
         progress: 6.0 s, 488.5 tps, lat 97.231 ms stddev 92.749, 0 failed
@@ -102,7 +102,7 @@ work_mem	4096	kB
         wal_level	replica	
         work_mem	4096	kB
 
-        dima-a7@otus:~$ pgbench -c 50 -P 6 -T 60 -j 2 -p 5432 sakila
+        dima@otus:~$ pgbench -c 50 -P 6 -T 60 -j 2 -p 5432 sakila
         pgbench (15.5 (Ubuntu 15.5-1.pgdg22.04+1))
         starting vacuum...end.
         progress: 6.0 s, 1035.0 tps, lat 46.303 ms stddev 31.007, 0 failed
@@ -179,7 +179,7 @@ min_wal_size = 1GB
 max_wal_size = 4GB
 
 
-dima-a7@otus:~$ pgbench -c 50 -P 6 -T 60 -j 2 -p 5432 sakila
+dima@otus:~$ pgbench -c 50 -P 6 -T 60 -j 2 -p 5432 sakila
 pgbench (15.5 (Ubuntu 15.5-1.pgdg22.04+1))
 starting vacuum...end.
 progress: 6.0 s, 1289.7 tps, lat 37.657 ms stddev 23.568, 0 failed
@@ -206,7 +206,7 @@ latency stddev = 24.201 ms
 initial connection time = 146.985 ms
 tps = 1321.169268 (without initial connection time)
 
-dima-a7@otus:~$ pgbench -c 50 -P 6 -T 60 -j 2 -p 5432 sakila
+dima@otus:~$ pgbench -c 50 -P 6 -T 60 -j 2 -p 5432 sakila
 pgbench (15.5 (Ubuntu 15.5-1.pgdg22.04+1))
 starting vacuum...end.
 progress: 6.0 s, 1223.8 tps, lat 39.449 ms stddev 24.766, 0 failed

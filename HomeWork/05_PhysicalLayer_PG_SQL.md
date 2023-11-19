@@ -2,14 +2,14 @@
 # поставьте на нее PostgreSQL 15 через sudo apt
 # проверьте что кластер запущен через sudo -u postgres pg_lsclusters
 
-dima-a7@otus:~$ pg_lsclusters
+dima@otus:~$ pg_lsclusters
 Ver Cluster Port Status Owner    Data directory              Log file
 15  main    5432 down   postgres /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log
-dima-a7@otus:~$ sudo pg_ctlcluster 15 main start
-dima-a7@otus:~$ pg_lsclusters
+dima@otus:~$ sudo pg_ctlcluster 15 main start
+dima@otus:~$ pg_lsclusters
 Ver Cluster Port Status Owner    Data directory              Log file
 15  main    5432 online postgres /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log
-dima-a7@otus:~$
+dima@otus:~$
 
 # зайдите из под пользователя postgres в psql и сделайте произвольную таблицу с произвольным содержимым
 
@@ -17,7 +17,7 @@ dima-a7@otus:~$
 -------------------+----------+----------+-------------+-------------+------------+-----------------+------------------------
  postgres          | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |            | libc            | =Tc/postgres          +
                    |          |          |             |             |            |                 | postgres=CTc/postgres +
-                   |          |          |             |             |            |                 | "dima-a7"=CTc/postgres
+                   |          |          |             |             |            |                 | "dima"=CTc/postgres
  readme_to_recover | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |            | libc            |
  template0         | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |            | libc            | =c/postgres           +
                    |          |          |             |             |            |                 | postgres=CTc/postgres
@@ -50,11 +50,11 @@ postgres=# \dt
 
 
 ## Найден нераспознанный диск
-dima-a7@otus:~$ sudo parted -l | grep Error
+dima@otus:~$ sudo parted -l | grep Error
 Error: /dev/vdb: unrecognised disk label
 
 ## У диска нет id
-dima-a7@otus:~$ lsblk
+dima@otus:~$ lsblk
 NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
 loop0    7:0    0  63.4M  1 loop /snap/core20/1974
 loop1    7:1    0  63.5M  1 loop /snap/core20/2015
@@ -68,15 +68,15 @@ vda    252:0    0    20G  0 disk
 vdb    252:16   0    10G  0 disk
 
 ## Выбор стандарта GPT
-dima-a7@otus:~$ sudo parted /dev/vdb mklabel gpt
+dima@otus:~$ sudo parted /dev/vdb mklabel gpt
 Information: You may need to update /etc/fstab.
 
 ## Создание логического диска
-dima-a7@otus:~$ sudo parted -a opt /dev/vdb mkpart primary ext4 0% 100%
+dima@otus:~$ sudo parted -a opt /dev/vdb mkpart primary ext4 0% 100%
 Information: You may need to update /etc/fstab.
 
 ## Раздел создан
-dima-a7@otus:~$ lsblk
+dima@otus:~$ lsblk
 NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
 loop0    7:0    0  63.4M  1 loop /snap/core20/1974
 loop1    7:1    0  63.5M  1 loop /snap/core20/2015
@@ -91,7 +91,7 @@ vdb    252:16   0    10G  0 disk
 └─vdb1 252:17   0    10G  0 part
 
 ## Форматирование диска
-dima-a7@otus:~$ sudo mkfs.ext4 -L datapartition /dev/vdb1
+dima@otus:~$ sudo mkfs.ext4 -L datapartition /dev/vdb1
 mke2fs 1.46.5 (30-Dec-2021)
 Creating filesystem with 2620928 4k blocks and 655360 inodes
 Filesystem UUID: ab962ee0-4cd4-4406-bf0d-bce31db7c18b
@@ -104,7 +104,7 @@ Creating journal (16384 blocks): done
 Writing superblocks and filesystem accounting information: done
 
 ## ID диска
-dima-a7@otus:~$ sudo lsblk -o NAME,FSTYPE,LABEL,UUID,MOUNTPOINT
+dima@otus:~$ sudo lsblk -o NAME,FSTYPE,LABEL,UUID,MOUNTPOINT
 NAME   FSTYPE   LABEL         UUID                                 MOUNTPOINT
 loop0  squashfs                                                    /snap/core20/1974
 loop1  squashfs                                                    /snap/core20/2015
@@ -122,9 +122,9 @@ vdb
 sudo mkdir -p /mnt/data
 
 ## Монтирование диска
-dima-a7@otus:~$ sudo mount -o defaults /dev/vdb1 /mnt/data
+dima@otus:~$ sudo mount -o defaults /dev/vdb1 /mnt/data
 
-dima-a7@otus:~$ sudo lsblk -o NAME,FSTYPE,LABEL,UUID,MOUNTPOINT
+dima@otus:~$ sudo lsblk -o NAME,FSTYPE,LABEL,UUID,MOUNTPOINT
 NAME   FSTYPE   LABEL         UUID                                 MOUNTPOINT
 loop0  squashfs                                                    /snap/core20/1974
 loop1  squashfs                                                    /snap/core20/2015
@@ -139,15 +139,15 @@ vdb
 └─vdb1 ext4     datapartition ab962ee0-4cd4-4406-bf0d-bce31db7c18b /mnt/data
 
 ## Тест монтирования
-dima-a7@otus:~$ df -h -x tmpfs
+dima@otus:~$ df -h -x tmpfs
 Filesystem      Size  Used Avail Use% Mounted on
 /dev/vda2        20G  5.6G   14G  30% /
 /dev/vdb1       9.8G   24K  9.3G   1% /mnt/data
 
-dima-a7@otus:~$ echo "success" | sudo tee /mnt/data/test_file
+dima@otus:~$ echo "success" | sudo tee /mnt/data/test_file
 success
 
-dima-a7@otus:~$ sudo rm /mnt/data/test_file
+dima@otus:~$ sudo rm /mnt/data/test_file
 
 
 
@@ -155,10 +155,10 @@ dima-a7@otus:~$ sudo rm /mnt/data/test_file
 # перезагрузите инстанс и убедитесь, что диск остается примонтированным (если не так смотрим в сторону fstab)
 
 ## Перезагрузка
-dima-a7@otus:~$ sudo pg_ctlcluster 15 main restart
+dima@otus:~$ sudo pg_ctlcluster 15 main restart
 
 ## Диск остался примонтирован
-dima-a7@otus:~$ sudo lsblk -o NAME,FSTYPE,LABEL,UUID,MOUNTPOINT
+dima@otus:~$ sudo lsblk -o NAME,FSTYPE,LABEL,UUID,MOUNTPOINT
 NAME   FSTYPE   LABEL         UUID                                 MOUNTPOINT
 loop0  squashfs                                                    /snap/core20/1974
 loop1  squashfs                                                    /snap/core20/2015
@@ -173,20 +173,20 @@ vdb
 └─vdb1 ext4     datapartition ab962ee0-4cd4-4406-bf0d-bce31db7c18b /mnt/data
 
 # сделайте пользователя postgres владельцем /mnt/data - a/chown -R postgres:postgres /mnt/data
-dima-a7@otus:~$ sudo chown -R postgres:postgres /mnt/data
+dima@otus:~$ sudo chown -R postgres:postgres /mnt/data
 
 # перенесите содержимое /var/lib/postgres/15 в /mnt/data - mv /var/lib/postgresql/15/mnt/data
-dima-a7@otus:~$ mv /var/lib/postgresql/15 /mnt/data
+dima@otus:~$ mv /var/lib/postgresql/15 /mnt/data
 mv: cannot move '/var/lib/postgresql/15' to '/mnt/data/15': Permission denied
-dima-a7@otus:~$ sudo mv /var/lib/postgresql/15 /mnt/data
+dima@otus:~$ sudo mv /var/lib/postgresql/15 /mnt/data
 
 # попытайтесь запустить кластер - sudo -u postgres pg_ctlcluster 15 main start
 
-dima-a7@otus:~$ sudo pg_ctlcluster 15 main start
+dima@otus:~$ sudo pg_ctlcluster 15 main start
 Error: /var/lib/postgresql/15/main is not accessible or does not exist
 
-dima-a7@otus:~$ sudo -u postgres psql
-could not change directory to "/home/dima-a7": Permission denied
+dima@otus:~$ sudo -u postgres psql
+could not change directory to "/home/dima": Permission denied
 psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
         Is the server running locally and accepting connections on that socket?
 
@@ -210,19 +210,19 @@ sudo nano /etc/postgresql/10/main/postgresql.conf
 Не получилось, т.к. перед перемещением папки и изменением конфига не останавливали кластер. 
 
 
-dima-a7@otus:~$ sudo -u postgres pg_ctlcluster 15 main start
+dima@otus:~$ sudo -u postgres pg_ctlcluster 15 main start
 Warning: the cluster will not be running as a systemd service. Consider using systemctl:
   sudo systemctl start postgresql@15-main
 
-dima-a7@otus:~$ sudo systemctl start postgresql@15-main
+dima@otus:~$ sudo systemctl start postgresql@15-main
 Job for postgresql@15-main.service failed because the service did not take the steps required by its unit configuration.
 See "systemctl status postgresql@15-main.service" and "journalctl -xeu postgresql@15-main.service" for details.
 
-dima-a7@otus:~$ pg_lsclusters
+dima@otus:~$ pg_lsclusters
 Ver Cluster Port Status Owner    Data directory    Log file
 15  main    5432 down   postgres /mnt/data/15/main /var/log/postgresql/postgresql-15-main.log
 
-dima-a7@otus:~$ systemctl status postgresql@15-main.service
+dima@otus:~$ systemctl status postgresql@15-main.service
 × postgresql@15-main.service - PostgreSQL Cluster 15-main
      Loaded: loaded (/lib/systemd/system/postgresql@.service; enabled-runtime; vendor preset: enabled)
      Active: failed (Result: protocol) since Fri 2023-11-10 19:50:03 UTC; 1min 17s ago
@@ -278,7 +278,7 @@ postgres=# select * from test;
 
 5. На ВМ2 проверить наличие монтированного диска
 
-dima-a7@otus:~$ sudo lsblk -o NAME,FSTYPE,LABEL,UUID,MOUNTPOINT
+dima@otus:~$ sudo lsblk -o NAME,FSTYPE,LABEL,UUID,MOUNTPOINT
 NAME   FSTYPE   LABEL         UUID                                 MOUNTPOINT
 loop0  squashfs                                                    /snap/core20/1974
 loop1  squashfs                                                    /snap/core20/2015
@@ -296,7 +296,7 @@ vdb
 sudo mkdir -p /mnt/data
 
 7. Монтирование диска
-dima-a7@otus:~$ sudo mount -o defaults /dev/vdb1 /mnt/data
+dima@otus:~$ sudo mount -o defaults /dev/vdb1 /mnt/data
 
 8. Изменить data_directory в /etc/postgresql/15/main/postgresql.conf на ВМ2
     sudo nano /etc/postgresql/15/main/postgresql.conf
@@ -306,8 +306,8 @@ dima-a7@otus:~$ sudo mount -o defaults /dev/vdb1 /mnt/data
    sudo systemctl start postgresql@15-main 
 
 10. Зайти под postgres
-dima-a7@otus:~$ sudo -u postgres psql
-could not change directory to "/home/dima-a7": Permission denied
+dima@otus:~$ sudo -u postgres psql
+could not change directory to "/home/dima": Permission denied
 psql (15.5 (Ubuntu 15.5-1.pgdg22.04+1))
 Type "help" for help.
 
