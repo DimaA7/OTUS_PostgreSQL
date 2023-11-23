@@ -29,10 +29,12 @@
 
   ### Инициализация
         pgbench -i postgres -p 5432
+        sudo pgbench -i postgres -p 5432 -U postgres
         pgbench -i sakila -p 5432
+        sudo pgbench -i sakila -p 5432 -U postgres
 
  ## Команда для теста производительности 
-    sudo pgbench -c 8 -P 6 -T 60 -j 2 -U postgres -p 5432 sakila
+    sudo pgbench -c 20 -P 6 -T 60 -j 2 -p 5432 -U postgres sakila
         c - подключения
         P - секунды для отчета
         Т - секунды теста
@@ -40,94 +42,70 @@
 
  ## Тест на настройках по умолчанию:
 
-   ## Настройки:
-        maintenance_work_mem	65536	kB
-        max_connections	100	
-        shared_buffers	16384	8kB
-        synchronous_commit	on	
-        temp_buffers	1024	8kB
-        wal_level	replica	
-        work_mem	4096	kB
+   ## Настройки по умолчанию:
+            max_connections	20	 - задает максимальное количество подключений к БД. Уменьшено относительно значения по умолчанию        
+            checkpoint_completion_target	0.9	    - коэффициэнт интервала между контрольными точками. Обычно 0.9. Можно уменьшить.
+            default_statistics_target	100	        - 
+            effective_cache_size	524288	8kB     - Этот параметр соответствует максимальному размеру объекта, который может поместиться в системный кэш. Это значение используется только для оценки. effective_cache_size можно установить в 1/2 - 2/3 от объёма имеющейся в наличии оперативной памяти, если вся она отдана в распоряжение PostgreSQL. 
+            effective_io_concurrency	1	
+            huge_pages	try	
+            maintenance_work_mem	65536	kB
+            max_wal_size	1024	MB
+            min_wal_size	80	MB
+            random_page_cost	4	
+            shared_buffers	16384	8kB             - определяет количество памяти, которое будет выделено postgres для кеширования данных. устанавливают 25% от всей памяти.
+            temp_buffers	1024	8kB             - 
+            wal_buffers	512	8kB
+            work_mem	4096	kB
+            synchronous_commit	on	
+            wal_level	replica	
 
-checkpoint_completion_target	0.9	
-default_statistics_target	100	
-effective_cache_size	524288	8kB
-effective_io_concurrency	1	
-huge_pages	try	
-maintenance_work_mem	65536	kB
-max_connections	300	
-max_wal_size	1024	MB
-min_wal_size	80	MB
-random_page_cost	4	
-shared_buffers	16384	8kB
-temp_buffers	1024	8kB
-wal_buffers	512	8kB
-work_mem	4096	kB
 
-   ## Тест
-        dima@otus:~$ pgbench -c 50 -P 6 -T 60 -j 2 -p 5432 sakila
+* effective_cache_size = 3GB		#Этот параметр помогает планировщику postgres определить количество доступной памяти для дискового кеширования. На основе того, доступна память или нет, планировщик будет делать выбор между использованием индексов и использованием сканирования таблицы. Это значение следует устанавливать в 50%…75% всей доступной оперативной памяти, в зависимости от того, сколько памяти доступно для системного кеша. Этот параметр не влияет на выделяемые ресурсы – это оценочная информация для планировщика.
+* maintenance_work_mem = 256MB		#Задаёт максимальный объём памяти для операций обслуживания БД, в частности VACUUM, CREATE INDEX и ALTER TABLE ADD FOREIGN KEY. Чтобы операции выполнялись максимально быстро, нужно устанавливать этот параметр тем выше, чем больше размер таблиц в БД. Неплохо бы устанавливать его значение от 50 до 75% размера самой большой таблицы или индекса или, если точно определить невозможно, от 32 до 256 МБ. Например, при памяти 1–4 ГБ рекомендуется устанавливать 128–512 МБ.
+* checkpoint_completion_target = 0.9	#Задаёт целевое время для завершения процедуры контрольной точки, как коэффициент для общего времени между контрольными точками. Обычно рекомендуется устанавливать данный параметр равным 0.9.
+* wal_buffers = 16MB			#Задаёт объём разделяемой памяти, который будет использоваться для буферизации данных WAL, ещё не записанных на диск. Этот параметр стоит увеличивать в системах с большим количеством записей. Значение в 1Мб рекомендуют разработчики postgres даже для очень больших систем. Однако, сайт https://pgtune.leopard.in.ua предложил для моей конфигурации размер 16MB, поэтому я и применил это значение.
+* default_statistics_target = 100	#Устанавливает значение ориентира статистики по умолчанию, распространяющееся на столбцы, для которых командой ALTER TABLE SET STATISTICS не заданы отдельные ограничения. Данное знакчение в целом является оптимальным для большинства БД, т.к. позволяет просматривать вполне адекватное количество записей для статистики. В случае необходимости этот параметр можно увеличить.
+* random_page_cost = 1.1		#Задаёт приблизительную стоимость чтения одной произвольной страницы с диска. Общие рекомендации: 1.1~1.2 для NVME-SSD дисков; 1.3~1.5 для SATA-SSD дисков; 2.0~2.5 для HDD\SAS RAID; 4.0 (по умолчанию) для медленного одиночного HDD диска.
+* effective_io_concurrency = 200	#Задаёт допустимое число параллельных операций ввода/вывода, которое говорит PostgreSQL о том, сколько операций ввода/вывода могут быть выполнены одновременно. Не нашёл в сети рекомендаций для этого параметра, но сайт https://pgtune.leopard.in.ua предложил установить значение 200.
+* work_mem = 2621kB			#Задаёт объём памяти, который будет использоваться для внутренних операций сортировки и хеш-таблиц, прежде чем будут задействованы временные файлы на диске. Рекомендуют ставить RAM/32.
+* min_wal_size = 1GB			#Пока WAL занимает на диске меньше этого объёма, старые файлы WAL в контрольных точках всегда перерабатываются, а не удаляются. Рекомендаций не нашёл, поэтому поставил значения с сайта https://pgtune.leopard.in.ua.
+* max_wal_size = 4GB			#Задаёт максимальный размер, до которого может вырастать WAL между автоматическими контрольными точками в WAL. Рекомендаций не нашёл, поэтому поставил значения с сайта https://pgtune.leopard.in.ua.
+* synchronous_commit = 'off'		#Включает/выключает синхронную запись в лог файлы после каждой транзакции. Это защищает от возможной потери данных. Но это накладывает ограничение на пропускную способность сервера. Т.е., установка значения off для данного параметра даёт возможность завершать транзакции быстрее, ценой того, что в случае краха СУБД последние транзакции могут быть потеряны.
+
+
+
+
+
+
+
+   ## Тест #1
+        dima@otus:~$ sudo pgbench -c 20 -P 6 -T 60 -j 2 -p 5432 -U postgres sakila
         pgbench (15.5 (Ubuntu 15.5-1.pgdg22.04+1))
         starting vacuum...end.
-        progress: 6.0 s, 488.5 tps, lat 97.231 ms stddev 92.749, 0 failed
-        progress: 12.0 s, 431.3 tps, lat 114.263 ms stddev 100.705, 0 failed
-        progress: 18.0 s, 320.8 tps, lat 158.499 ms stddev 142.102, 0 failed
-        progress: 24.0 s, 296.5 tps, lat 169.788 ms stddev 204.855, 0 failed
-        progress: 30.0 s, 446.0 tps, lat 112.468 ms stddev 115.023, 0 failed
-        progress: 36.0 s, 486.5 tps, lat 101.637 ms stddev 90.683, 0 failed
-        progress: 42.0 s, 391.3 tps, lat 128.179 ms stddev 143.203, 0 failed
-        progress: 48.0 s, 483.0 tps, lat 103.740 ms stddev 87.106, 0 failed
-        progress: 54.0 s, 293.0 tps, lat 171.367 ms stddev 180.190, 0 failed
-        progress: 60.0 s, 514.7 tps, lat 97.194 ms stddev 88.235, 0 failed
+        progress: 6.0 s, 392.3 tps, lat 50.482 ms stddev 32.639, 0 failed
+        progress: 12.0 s, 299.3 tps, lat 66.680 ms stddev 58.172, 0 failed
+        progress: 18.0 s, 358.0 tps, lat 56.042 ms stddev 37.977, 0 failed
+        progress: 24.0 s, 370.5 tps, lat 53.839 ms stddev 37.356, 0 failed
+        progress: 30.0 s, 444.2 tps, lat 44.913 ms stddev 30.593, 0 failed
+        progress: 36.0 s, 220.3 tps, lat 90.989 ms stddev 67.060, 0 failed
+        progress: 42.0 s, 213.8 tps, lat 92.414 ms stddev 71.512, 0 failed
+        progress: 48.0 s, 286.8 tps, lat 70.504 ms stddev 63.994, 0 failed
+        progress: 54.0 s, 418.2 tps, lat 48.047 ms stddev 34.361, 0 failed
+        progress: 60.0 s, 413.8 tps, lat 48.012 ms stddev 31.565, 0 failed
         transaction type: <builtin: TPC-B (sort of)>
         scaling factor: 1
         query mode: simple
-        number of clients: 50
+        number of clients: 20
         number of threads: 2
         maximum number of tries: 1
         duration: 60 s
-        number of transactions actually processed: 24960
+        number of transactions actually processed: 20524
         number of failed transactions: 0 (0.000%)
-        latency average = 120.131 ms
-        latency stddev = 125.577 ms
-        initial connection time = 169.738 ms
-        tps = 415.110377 (without initial connection time)
-
-# Установил max_connections = 300
-
-        maintenance_work_mem	65536	kB
-        max_connections	300	
-        shared_buffers	16384	8kB
-        synchronous_commit	off	
-        temp_buffers	1024	8kB
-        wal_level	replica	
-        work_mem	4096	kB
-
-        dima@otus:~$ pgbench -c 50 -P 6 -T 60 -j 2 -p 5432 sakila
-        pgbench (15.5 (Ubuntu 15.5-1.pgdg22.04+1))
-        starting vacuum...end.
-        progress: 6.0 s, 1035.0 tps, lat 46.303 ms stddev 31.007, 0 failed
-        progress: 12.0 s, 1086.8 tps, lat 46.069 ms stddev 29.443, 0 failed
-        progress: 18.0 s, 1074.7 tps, lat 46.478 ms stddev 30.122, 0 failed
-        progress: 24.0 s, 1064.2 tps, lat 47.056 ms stddev 30.380, 0 failed
-        progress: 30.0 s, 1124.8 tps, lat 44.402 ms stddev 29.010, 0 failed
-        progress: 36.0 s, 1083.2 tps, lat 46.186 ms stddev 27.552, 0 failed
-        progress: 42.0 s, 1125.3 tps, lat 44.437 ms stddev 28.487, 0 failed
-        progress: 48.0 s, 1134.8 tps, lat 44.082 ms stddev 27.976, 0 failed
-        progress: 54.0 s, 1116.2 tps, lat 44.733 ms stddev 34.205, 0 failed
-        progress: 60.0 s, 1096.3 tps, lat 45.631 ms stddev 34.298, 0 failed
-        transaction type: <builtin: TPC-B (sort of)>
-        scaling factor: 1
-        query mode: simple
-        number of clients: 50
-        number of threads: 2
-        maximum number of tries: 1
-        duration: 60 s
-        number of transactions actually processed: 65698
-        number of failed transactions: 0 (0.000%)
-        latency average = 45.581 ms
-        latency stddev = 30.476 ms
-        initial connection time = 209.070 ms
-        tps = 1094.521124 (without initial connection time)
+        latency average = 58.472 ms
+        latency stddev = 47.763 ms
+        initial connection time = 28.789 ms
+        tps = 341.783949 (without initial connection time)
 
 
 /etc/postgresql/15/main/postgresql.conf	827	30	checkpoint_completion_target	0.9	true	
@@ -149,62 +127,55 @@ work_mem	4096	kB
 /etc/postgresql/15/main/postgresql.conf	828	31	wal_buffers	16MB	false	setting could not be applied
 /etc/postgresql/15/main/postgresql.conf	832	35	work_mem	10485kB	true	
 
-checkpoint_completion_target	0.9	
-default_statistics_target	100	
-effective_cache_size	393216	8kB
-effective_io_concurrency	200	
-huge_pages	off	
-maintenance_work_mem	262144	kB
-max_connections	300	
-max_wal_size	4096	MB
-min_wal_size	1024	MB
-random_page_cost	1.1	
-shared_buffers	131072	8kB
-temp_buffers	1024	8kB
-wal_buffers	2048	8kB
-work_mem	10485	kB
+   ## Оптимизированные настройки определенные по сайту https://pgtune.leopard.in.ua/:
 
-max_connections = 100
-shared_buffers = 1GB
-effective_cache_size = 3GB
-maintenance_work_mem = 256MB
-checkpoint_completion_target = 0.9
-wal_buffers = 16MB
-default_statistics_target = 100
-random_page_cost = 1.1
-effective_io_concurrency = 200
-work_mem = 10485kB
-huge_pages = off
-min_wal_size = 1GB
-max_wal_size = 4GB
+            max_connections = 20
+            shared_buffers = 1GB
+            effective_cache_size = 3GB
+            maintenance_work_mem = 256MB
+            checkpoint_completion_target = 0.9
+            wal_buffers = 16MB
+            default_statistics_target = 100
+            random_page_cost = 1.1
+            effective_io_concurrency = 200
+            work_mem = 10485kB
+            huge_pages = off
+            min_wal_size = 1GB
+            max_wal_size = 4GB
 
 
-dima@otus:~$ pgbench -c 50 -P 6 -T 60 -j 2 -p 5432 sakila
+dima@otus:~$ sudo pgbench -c 20 -P 6 -T 60 -j 2 -p 5432 -U postgres sakila
 pgbench (15.5 (Ubuntu 15.5-1.pgdg22.04+1))
 starting vacuum...end.
-progress: 6.0 s, 1289.7 tps, lat 37.657 ms stddev 23.568, 0 failed
-progress: 12.0 s, 1332.5 tps, lat 37.450 ms stddev 23.017, 0 failed
-progress: 18.0 s, 1330.2 tps, lat 37.634 ms stddev 23.924, 0 failed
-progress: 24.0 s, 1313.5 tps, lat 38.053 ms stddev 22.631, 0 failed
-progress: 30.0 s, 1332.2 tps, lat 37.601 ms stddev 23.047, 0 failed
-progress: 36.0 s, 1355.8 tps, lat 36.794 ms stddev 23.701, 0 failed
-progress: 42.0 s, 1307.3 tps, lat 38.336 ms stddev 23.860, 0 failed
-progress: 48.0 s, 1343.2 tps, lat 37.106 ms stddev 22.456, 0 failed
-progress: 54.0 s, 1295.0 tps, lat 38.641 ms stddev 27.885, 0 failed
-progress: 60.0 s, 1324.8 tps, lat 37.683 ms stddev 25.330, 0 failed
+progress: 6.0 s, 280.7 tps, lat 70.351 ms stddev 91.135, 0 failed
+progress: 12.0 s, 372.8 tps, lat 53.648 ms stddev 34.324, 0 failed
+progress: 18.0 s, 376.5 tps, lat 53.235 ms stddev 40.739, 0 failed
+progress: 24.0 s, 339.8 tps, lat 58.909 ms stddev 38.643, 0 failed
+progress: 30.0 s, 415.2 tps, lat 47.214 ms stddev 44.201, 0 failed
+progress: 36.0 s, 422.7 tps, lat 48.308 ms stddev 51.533, 0 failed
+progress: 42.0 s, 506.5 tps, lat 39.413 ms stddev 26.397, 0 failed
+progress: 48.0 s, 385.0 tps, lat 52.073 ms stddev 31.160, 0 failed
+progress: 54.0 s, 375.8 tps, lat 53.140 ms stddev 35.165, 0 failed
+progress: 60.0 s, 520.7 tps, lat 37.922 ms stddev 37.322, 0 failed
 transaction type: <builtin: TPC-B (sort of)>
 scaling factor: 1
 query mode: simple
-number of clients: 50
+number of clients: 20
 number of threads: 2
 maximum number of tries: 1
 duration: 60 s
-number of transactions actually processed: 79395
+number of transactions actually processed: 23994
 number of failed transactions: 0 (0.000%)
-latency average = 37.757 ms
-latency stddev = 24.201 ms
-initial connection time = 146.985 ms
-tps = 1321.169268 (without initial connection time)
+latency average = 50.051 ms
+latency stddev = 45.072 ms
+initial connection time = 32.223 ms
+tps = 399.150588 (without initial connection time)
+
+
+Изменил настройки:
+
+synchronous_commit = 'off' # 
+
 
 dima@otus:~$ pgbench -c 50 -P 6 -T 60 -j 2 -p 5432 sakila
 pgbench (15.5 (Ubuntu 15.5-1.pgdg22.04+1))
@@ -232,6 +203,10 @@ latency average = 38.703 ms
 latency stddev = 24.083 ms
 initial connection time = 156.682 ms
 tps = 1288.566560 (without initial connection time)
+
+
+
+
 
 
 написать какого значения tps удалось достичь, показать какие параметры в какие значения устанавливали и почему
