@@ -164,7 +164,7 @@ tps = **433.509347** (without initial connection time)
 # отключил синхронную запись в лог файлы после каждой транзакции. Возможны потери данных, но сильно повысилась производительность. 
 synchronous_commit = 'off'
 
-dima-a7@otus:/etc/postgresql/15/main$ sudo pgbench -c 20 -P 6 -T 60 -j 2 -p 5432 -U postgres sakila
+sudo pgbench -c 20 -P 6 -T 60 -j 2 -p 5432 -U postgres sakila
 pgbench (15.5 (Ubuntu 15.5-1.pgdg22.04+1))
 starting vacuum...end.
 progress: 6.0 s, 2785.7 tps, lat 7.139 ms stddev 3.222, 0 failed
@@ -192,7 +192,7 @@ initial connection time = 28.834 ms
 tps = **2556.151231** (without initial connection time)
 
 
-dima-a7@otus:~$ sudo pgbench -c 20 -P 6 -T 60 -j 2 -p 5432 -U postgres sakila
+sudo pgbench -c 20 -P 6 -T 60 -j 2 -p 5432 -U postgres sakila
 pgbench (15.5 (Ubuntu 15.5-1.pgdg22.04+1))
 starting vacuum...end.
 progress: 6.0 s, 2319.8 tps, lat 8.572 ms stddev 12.027, 0 failed
