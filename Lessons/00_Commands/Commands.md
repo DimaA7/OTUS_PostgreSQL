@@ -3,6 +3,18 @@
 
 https://console.cloud.yandex.ru/folders/b1ggmi2dmpt48jcfqocc/compute/instances
 
+## Создать SSH ключ
+ssh-keygen 
+ssh-keygen -t ed25519
+Ввести имя пользователя и пароль
+
+## Подключиться используя определенный SSH ключ
+ssh dima@84.201.188.155 -i C:\Users\dima-\.ssh\id_ed25519_2
+
+## Сменить пароль ssh
+ssh-keygen -p -f <Путь_к_закрытому_ключу>
+ssh-keygen -p -f C:\Users\dima-\.ssh\id_ed25519_2
+
 
 # Копирование публичного ключа в буфер обмена
 
@@ -18,8 +30,7 @@ type C:\Users\<имя_пользователя>\.ssh\<имя_ключа>.pub
 
 **ssh <Имя_пользователя>@51.250.68.31**
 
-Сменить пароль ssh
-ssh-keygen -p -f <Путь_к_закрытому_ключу>
+
 
 postgres по-умолчанию "postgres"
 
