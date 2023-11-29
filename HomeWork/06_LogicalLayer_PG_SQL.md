@@ -171,6 +171,7 @@
     testdb=> create table testnm.t1(c1 integer); insert into testnm.t4 values (1);
     ERROR:  relation "t1" already exists
     INSERT 0 1
+ Вероятно чтобы проще ограничить доступ readonly к схеме public но оставить доступ к tectnm можно было бы обновить кластер с 14 до 15 версии.
 # Критерии оценки:
 # Выполнение ДЗ: 10 баллов
 # плюс 2 балл за красивое решение
