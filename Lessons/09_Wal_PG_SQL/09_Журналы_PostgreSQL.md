@@ -1,5 +1,12 @@
 Журналирование PostgreSQL
 # Материалы:
+    [Карта видимости](https://postgrespro.ru/docs/postgrespro/12/storage-vm)
+    [Карта свободного пространства](https://postgrespro.ru/docs/postgrespro/12/storage-fsm)\
+    [WAL в PostgreSQL: 1. Буферный кеш](https://habr.com/ru/companies/postgrespro/articles/458186/)
+    [WAL в PostgreSQL: 2. Журнал предзаписи](https://habr.com/ru/companies/postgrespro/articles/459250/)
+    [WAL в PostgreSQL: 3. Контрольная точка](https://habr.com/ru/companies/postgrespro/articles/460423/)
+    [WAL в PostgreSQL: 4. Настройка журнала](https://habr.com/ru/companies/postgrespro/articles/461523/)
+    
     [Калькулятор настроек](https://ottertune.com/)
     https://pgtune.leopard.in.ua/
     https://stackoverflow.com/questions/58909125/postgres-auto-tuning
