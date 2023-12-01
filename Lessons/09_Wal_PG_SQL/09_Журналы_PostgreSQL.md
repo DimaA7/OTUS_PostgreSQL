@@ -6,6 +6,7 @@
     [WAL в PostgreSQL: 2. Журнал предзаписи](https://habr.com/ru/companies/postgrespro/articles/459250/)
     [WAL в PostgreSQL: 3. Контрольная точка](https://habr.com/ru/companies/postgrespro/articles/460423/)
     [WAL в PostgreSQL: 4. Настройка журнала](https://habr.com/ru/companies/postgrespro/articles/461523/)
+    [Записки угрюмого поднимателя пингвинов.](http://www.zaweel.ru/2016/07/postgresql_22.html#настройка-systemdb)
     
     [Калькулятор настроек](https://ottertune.com/)
     https://pgtune.leopard.in.ua/
@@ -36,6 +37,19 @@
     • не требуются блокировки
     • память выделяется по необходимости в пределах temp_buffers
     • обычный алгоритм вытеснения
+
+   # Представление pg_buffercache
+      CREATE EXTENSION pg_buffercache;
+      Представление pg_buffercache содержит:
+         bufferid — ID блока в общем буфере;
+         relfilenode — имя папки, где данные расположены;
+         reltablespace — Oid таблицы;
+         reldatabase — Oid базы данных;
+         relforknumber — номер ответвления;
+         relblocknumber — номер страницы;
+         isdirty — грязная страница;
+         usagecount — количество LRU страниц.
+
  ## Буферныйкэш. Разогрев кэша
     pg_prewarm
     • используется после рестарта кластера
@@ -148,3 +162,7 @@
    ### Настройки
         ● synchronous_commit = off (можно изменять на уровне транзакции)
         ● wal_writer_delay = 200ms
+
+
+
+        $/usr/lib/postgresql/13/bin/pg_waldump -r list - список менеджеров

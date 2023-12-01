@@ -3,7 +3,7 @@
 SELECT setting, unit FROM pg_settings WHERE name = 'shared_buffers'; 
 -- уменьшим количество буферов для наблюдения
 ALTER SYSTEM SET shared_buffers = 200;
-
+alter system reset shared_buffers;
 
 -- рестартуем кластер после изменений
 sudo pg_ctlcluster 13 main restart
@@ -65,10 +65,13 @@ LIMIT 10;
 
 -- сгенерируем значения с текстовыми полями - чтобы занять больше страниц
 CREATE TABLE test_text(t text);
+drop table test_text;
 INSERT INTO test_text SELECT 'строка '||s.id FROM generate_series(1,500) AS s(id); 
 SELECT * FROM test_text limit 10;
 SELECT * FROM test_text;
 SELECT * FROM pg_buffercache_v WHERE relname='test_text';
+
+SELECT * FROM pg_stat_activity;
 
 -- интересный эффект
 vacuum test_text;
@@ -88,25 +91,36 @@ SELECT * FROM pg_buffercache_v WHERE relname='test_text';
 
 -------------WAL-----------------
 \c buffer_temp
-SELECT * FROM pg_ls_waldir() LIMIT 10;
+SELECT * FROM pg_ls_waldir() LIMIT 50;
 CREATE EXTENSION pageinspect;
 BEGIN;
 -- текущая позиция lsn
-SELECT pg_current_wal_insert_lsn();		-- Выдаёт текущую позицию добавления в журнале предзаписи
+SELECT pg_current_wal_insert_lsn();		-- Выдаёт текущую позицию добавления в журнале предзаписи  0/6F60C688
 -- посмотрим какой у нас wal file
 SELECT pg_walfile_name('0/___');
-SELECT pg_walfile_name('0/1670928');	-- Выдаёт для заданной позиции в журнале предзаписи имя соответствующего файла WAL
+SELECT pg_walfile_name('0/6F60C688');	-- Выдаёт для заданной позиции в журнале предзаписи имя соответствующего файла WAL   00000001000000000000006F
 
+INSERT INTO test_text SELECT 'строка '||s.id FROM generate_series(1,5) AS s(id); 
+SELECT pg_walfile_name('0/6F60C5E8');
+
+SELECT pg_current_wal_insert_lsn(); -- 0/6F60CBD8   
+select 6F60CBD8-6F60C5E8;
 -- после UPDATE номер lsn изменился
 SELECT lsn FROM page_header(get_raw_page('test_text',0));
 commit;
 
 UPDATE test_text set t = '1' WHERE t = 'строка 1';
-SELECT pg_current_wal_insert_lsn();
+SELECT pg_current_wal_insert_lsn(); -- 0/6F60F2C0
+SELECT pg_current_wal_lsn();  --       0/6F60F2C0
 SELECT lsn FROM page_header(get_raw_page('test_text',0));
 SELECT '0/1672DB8'::pg_lsn - '0/1670928'::pg_lsn;
+
+SELECT '0/6F60F2C0'::pg_lsn - '0/6F60CBD8'::pg_lsn;
+
 sudo /usr/lib/postgresql/13/bin/pg_waldump -p /var/lib/postgresql/13/main/pg_wal -s 0/1670928 -e 0/1672DB8 000000010000000000000001
 
+sudo /usr/lib/postgresql/15/bin/pg_waldump -p /var/lib/postgresql/15/main/pg_wal -s 0/6F60CBD8 -e 0/6F60F2C0 00000001000000000000006F
+SELECT pg_walfile_name('0/6F60F2C0');
 
 
 ---Checkpoint----
