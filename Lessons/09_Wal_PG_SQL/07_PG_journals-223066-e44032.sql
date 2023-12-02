@@ -104,7 +104,8 @@ INSERT INTO test_text SELECT 'строка '||s.id FROM generate_series(1,5) AS 
 SELECT pg_walfile_name('0/6F60C5E8');
 
 SELECT pg_current_wal_insert_lsn(); -- 0/6F60CBD8   
-select 6F60CBD8-6F60C5E8;
+6F60CBD8-6F60C5E8;
+
 -- после UPDATE номер lsn изменился
 SELECT lsn FROM page_header(get_raw_page('test_text',0));
 commit;
