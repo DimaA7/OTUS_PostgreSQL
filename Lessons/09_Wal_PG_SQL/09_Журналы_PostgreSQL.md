@@ -8,10 +8,11 @@
     [WAL в PostgreSQL: 4. Настройка журнала](https://habr.com/ru/companies/postgrespro/articles/461523/)
     [Записки угрюмого поднимателя пингвинов.](http://www.zaweel.ru/2016/07/postgresql_22.html#настройка-systemdb)
     [Deep dive into PostgreSQL internal statistics. Алексей Лесовский](https://habr.com/ru/articles/505440/)
-    
+    [Включение ведения контрольных сумм в кластере PostgreSQL 12](https://blog.programs74.ru/how-to-enable-checksums-in-postgresql/)
     [Калькулятор настроек](https://ottertune.com/)
     https://pgtune.leopard.in.ua/
     https://stackoverflow.com/questions/58909125/postgres-auto-tuning
+
 # Буферный кэш
  ## Буферный кэш. Состав
     Каждый буфер состоит из одной страницы данных и заголовка. Размер по умолчанию 8 кб. Заголовок содержит:
@@ -119,8 +120,7 @@
    ## Контрольные суммы журнальных записей
         включены всегда, CRC-32
         Контрольные суммы страниц (накладные расходы)
-        По умолчанию отключены. До 12 версии можно включить только при
-        инициализации кластера.
+         По умолчанию отключены. До 12 версии можно включить только при инициализации кластера.
         pg_createcluster --data-checksums
    ## Настройки
         show data_checksums;
