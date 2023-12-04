@@ -12,29 +12,8 @@ sudo -u postgres psql
 
 -- Кто помнит? Как посмотреть конфигурационные файлы?
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 show hba_file;
 show config_file;
-
-
-
 
 -- database
 -- system catalog

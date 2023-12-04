@@ -37,9 +37,6 @@ ss -tlpn
 netstat -a | grep postgresql
 
 
-
-
-
 -- open access
 # show listen_addresses;
 # ALTER SYSTEM SET listen_addresses = '10.128.0.54'; -- создает в /var/lib/postgresql postgresql.auto.conf с параметрами

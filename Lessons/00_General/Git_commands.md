@@ -2,7 +2,11 @@
 Материалы для изучения:
 * [Основы Git - Запись изменений в репозиторий](https://git-scm.com/book/ru/v2/Основы-Git-Запись-изменений-в-репозиторий)
 * [30 команд Git, необходимых для освоения интерфейса командной строки Git](https://habr.com/ru/companies/ruvds/articles/599929/)
-
+* [GIT documentation](https://git-scm.com/doc)
+* [Using Git source control in VS Code](https://code.visualstudio.com/docs/sourcecontrol/overview)
+* [Comparing files using Visual Studio Code](https://www.meziantou.net/comparing-files-using-visual-studio-code.htm)
+* [GitLens Tutorial: How to Use GitLens in VS Code](https://www.youtube.com/watch?v=UQPb73Zz9qk)
+* [10 вещей, которые вы не знали о GitLens](https://learn.microsoft.com/ru-ru/shows/vs-code-livestreams/10-things-about-gitlens)
 
 # Перейти в репозиторий
 PS C:\> cd GitRepo
