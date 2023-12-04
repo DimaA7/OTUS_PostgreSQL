@@ -118,15 +118,18 @@
                 latency stddev = 2.885 ms
         tps увеличился в 7,4 раза, т.к. после завершения транзакций нет ожидания записи в WAL. WAL пишется асинхронно отдельным процессом.
 # Создайте новый кластер с включенной контрольной суммой страниц. Создайте таблицу. Вставьте несколько значений. Выключите кластер. Измените пару байт в таблице. 
-  postgres=# SHOW data_checksums;
+  На созданном кластере смотрим настройку контрольных сумм:
+        postgres=# SHOW data_checksums;
         data_checksums
         ----------------
         off
         (1 row)
-  Проверяем:
+  ## Выключаем кластер
+        sudo pg_ctlcluster 15 main2 stop
+  ## Проверяем что кластер выключен:
         sudo su - postgres -c '/usr/lib/postgresql/15/bin/pg_controldata -D "/var/lib/postgresql/15/main2"' | grep state
         Database cluster state:               shut down
-  Включаем контрольные суммы:
+  ## Включаем контрольные суммы:
         sudo su - postgres -c '/usr/lib/postgresql/15/bin/pg_checksums --enable -D "/var/lib/postgresql/15/main2"'
         Checksum operation completed
         Files scanned:   946
@@ -136,33 +139,81 @@
         pg_checksums: syncing data directory
         pg_checksums: updating control file
         Checksums enabled in cluster
-  защита страниц данных контрольными суммами включена.
-  Запускаем кластер:
+  ## Защита страниц данных контрольными суммами включена.
+  ## Запускаем кластер:
         sudo pg_ctlcluster 15 main2 start
-  Проверяем что контрольные суммы включены:
+  ## Проверяем что контрольные суммы включены:
         postgres=# SHOW data_checksums;
         data_checksums
         ----------------
         on
         (1 row)
-  Так же можно проверить включение контрольных сумм с помощью утилиты pg_controldata:
+    Так же можно проверить включение контрольных сумм с помощью утилиты pg_controldata:
         sudo su - postgres -c '/usr/lib/postgresql/15/bin/pg_controldata -D "/var/lib/postgresql/15/main2" | grep checksum'
         Data page checksum version:           1
-  Создадим таблицу и вставим значения:
+  ## Создадим таблицу и вставим значения:
         postgres=# CREATE TABLE test(i int);
         CREATE TABLE
         postgres=# INSERT INTO test SELECT s.id FROM generate_series(1,5) AS s(id);
         INSERT 0 5
         postgres=#
-  Смотрим где лежит таблица
+  ## Смотрим где лежит таблица
         postgres=# SELECT pg_relation_filepath('test');
         pg_relation_filepath
         ----------------------
         base/5/16388
-
-/var/lib/postgresql/15/main2/base/5/16388
-
-initdb --locale=ru_RU.UTF-8 --encoding=UTF8 -D /var/lib/postgres/data --data-checksums
-su - postgres -c '/usr/lib/postgresql/15/bin/pg_checksums --enable -D "/var/lib/postgresql/15/main2"'
+  ## Изменяем файл 
+        /var/lib/postgresql/15/main2/base/5/16388
 # Включите кластер и сделайте выборку из таблицы. Что и почему произошло? как проигнорировать ошибку и продолжить работу?
-
+  ## Включаем кластер
+        sudo pg_ctlcluster 15 main2 start
+  ## Запрашиваем таблицу
+        postgres=# select * from test;
+        WARNING:  page verification failed, calculated checksum 33889 but expected 2676
+        ERROR:  invalid page in block 0 of relation base/5/16388
+  ## Также можно ошибки запросом
+        postgres=# SELECT datname, checksum_failures, checksum_last_failure FROM pg_stat_database WHERE datname IS NOT NULL;
+        datname  | checksum_failures |     checksum_last_failure
+        -----------+-------------------+-------------------------------
+        postgres  |                 1 | 2023-12-04 07:03:45.959185+00
+        template1 |                 0 |
+        template0 |                 0 |
+        (3 rows)
+  ## Устанавливаем настройку игнорирования ошибок
+   SET ignore_checksum_failure = on;
+  ## Запрашиваем данные таблицы
+        postgres=# select * from test;
+        WARNING:  page verification failed, calculated checksum 33889 but expected 2676
+        i
+        ----
+        2
+        3
+        4
+        5
+        6
+        7
+        8
+        9
+        10
+        11
+        12
+        13
+        14
+        15
+        16
+        17
+        18
+        19
+        20
+        21
+        22
+        23
+        24
+        25
+        26
+        27
+        28
+        29
+        30
+        (29 rows)
+        Видно что значение 1 отсутствует в таблице. Остальные сохранились.
