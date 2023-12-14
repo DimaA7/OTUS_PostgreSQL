@@ -75,8 +75,10 @@ select id from test where id = 1;
 
 CREATE INDEX CONCURRENTLY "explain_depesz_com_hint_ORLQ_1" ON test ( id );
 
+
 EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON)
 select id from test where id = 1;
+
 
 EXPLAIN (ANALYZE, BUFFERS)
 select id from test where id = 1;
@@ -144,7 +146,9 @@ analyse test;
 set enable_seqscan='off';
 
 explain analyse
-select * from test where is_okay = 'Yes'; 968
+select * from test where is_okay = 'Yes';
+
+968
 
 create index idx_test_is_okay on test(is_okay);
 
@@ -158,11 +162,12 @@ explain
 select * from test order by id desc , is_okay desc;
 
 set enable_seqscan='on';
-SET enable_incremental_sort = on;
+SET enable_incremental_sort = off;
 
 
 explain
 select * from test order by id,is_okay desc;
+
 drop table test;
 
 
@@ -178,7 +183,7 @@ from generate_series(1, 50000);
 
 create index idx_test_id_is_okay on test(lower(is_okay));
 
-select * from test;
+select * from test limit 30;
 
 explain
 select * from test where is_okay = 'Yes';
@@ -198,6 +203,8 @@ create index idx_test_id_100 on test(id) where id < 100;
 explain
 select * from test where id > 100;
 
+explain
+select * from test where id > 20 and id < 60;
 
 --обслуживание индексов
 SELECT
@@ -329,6 +336,8 @@ where order_date between date'2020-01-01' and date'2020-02-01'
 explain (analyse,buffers)
 select * from orders where some_text ilike 'a%';
 
+select * from orders;
+
 select some_text, to_tsvector(some_text)
 from orders;
 
@@ -345,26 +354,43 @@ from orders;
 alter table orders drop column if exists some_text_lexeme;
 
 alter table orders add column some_text_lexeme tsvector;
-
-update orders
-set some_text_lexeme = to_tsvector(some_text);
+update orders set some_text_lexeme = to_tsvector(some_text);
 
 explain
 select *
 from orders
 where some_text_lexeme @@ to_tsquery('britains');
+
+-- Результат без индекса:
+		Gather  (cost=1000.00..146813.30 rows=168433 width=62)
+		  Workers Planned: 2
+		  ->  Parallel Seq Scan on orders  (cost=0.00..128970.00 rows=70180 width=62)
+		        Filter: (some_text_lexeme @@ to_tsquery('britains'::text))
+		JIT:
+		  Functions: 2
+		  Options: Inlining false, Optimization false, Expressions true, Deforming true
 
 drop index if exists search_index_ord;
-CREATE INDEX search_index_ord_btree using gin ON orders (some_text_lexeme) ;
-
 CREATE INDEX search_index_ord ON orders
     USING GIN (some_text_lexeme);
+drop index search_index_ord;
 
 explain
 select *
 from orders
 where some_text_lexeme @@ to_tsquery('britains');
 
+-- Результат с индексом:
+		Gather  (cost=1000.00..26778.93 rows=9756 width=62) (actual time=4278.703..11800.821 rows=5523 loops=1)
+		  Workers Planned: 2
+		  Workers Launched: 2
+		  Buffers: shared hit=15 read=19580
+		  ->  Parallel Seq Scan on orders  (cost=0.00..24803.33 rows=4065 width=62) (actual time=4264.907..11788.591 rows=1841 loops=3)
+		        Filter: (some_text ~~* 'a%'::text)
+		        Rows Removed by Filter: 331492
+		        Buffers: shared hit=15 read=19580
+		Planning Time: 0.114 ms
+		Execution Time: 11801.225 ms
 
 --Расширения pgstattuple
 CREATE EXTENSION pgstattuple;
@@ -394,20 +420,49 @@ create index orders_order_date on orders(order_date);
 analyse orders;
 
 select * from pg_stat_user_tables where relname='orders' ;
+	relid	schemaname	relname	seq_scan	seq_tup_read	idx_scan	idx_tup_fetch	n_tup_ins	n_tup_upd	n_tup_del	n_tup_hot_upd	n_live_tup	n_dead_tup	n_mod_since_analyze	n_ins_since_vacuum	last_vacuum	last_autovacuum					last_analyze					last_autoanalyze	vacuum_count	autovacuum_count	analyze_count	autoanalyze_count
+	17 154	public		orders	4			2 000 000		0			0				1 000 000	0			0			0				1 000 000	0			0					0					[NULL]		2023-12-13 20:17:08.789 +0300	2023-12-13 20:17:01.604 +0300	[NULL]				0				1					1				0
 
 select * from pgstattuple('orders');
+	table_len	tuple_count	tuple_len	tuple_percent	dead_tuple_count	dead_tuple_len	dead_tuple_percent	free_space	free_percent
+	65 650 688	1 000 000	57 682 158	87,86			0					0				0					216 968		0,33
+
 
 select * from pgstatindex('orders_order_date');
+	version	tree_level	index_size	root_block_no	internal_pages	leaf_pages	empty_pages	deleted_pages	avg_leaf_density	leaf_fragmentation
+	4		2			7 086 080	212				6				858			0			0				88,39				0
+
 
 update orders set order_date='2021-11-01' where id < 500000;
 
 select * from pgstattuple('orders');
+	table_len	tuple_count	tuple_len	tuple_percent	dead_tuple_count	dead_tuple_len	dead_tuple_percent	free_space	free_percent
+	98 426 880	1 000 000	57 682 158	58,6			499 999				28 843 764		29,3				275 156		0,28
 
 select * from pgstatindex('orders_order_date');
+	version	tree_level	index_size	root_block_no	internal_pages	leaf_pages	empty_pages	deleted_pages	avg_leaf_density	leaf_fragmentation
+	4		2			10 313 728	212				7				1 117		0			134				67,85				0,18
 
+analyse orders;
 vacuum orders;
 
+select * from pgstattuple('orders');
+	table_len	tuple_count	tuple_len	tuple_percent	dead_tuple_count	dead_tuple_len	dead_tuple_percent	free_space	free_percent
+	98 426 880	1 000 000	57 682 158	58,6			0					0				0					32 404 768	32,92
+
+select * from pgstatindex('orders_order_date');
+	version	tree_level	index_size	root_block_no	internal_pages	leaf_pages	empty_pages	deleted_pages	avg_leaf_density	leaf_fragmentation
+	4		2			10 313 728	212				7				1 117		0			134				67,85				0,18
+
 vacuum full orders;
+
+select * from pgstattuple('orders');
+	table_len	tuple_count	tuple_len	tuple_percent	dead_tuple_count	dead_tuple_len	dead_tuple_percent	free_space	free_percent
+	65 650 688	1 000 000	57 682 158	87,86			0					0				0					216 980		0,33
+
+select * from pgstatindex('orders_order_date');
+version	tree_level	index_size	root_block_no	internal_pages	leaf_pages	empty_pages	deleted_pages	avg_leaf_density	leaf_fragmentation
+4		2			7 077 888	213				6				857			0			0				88,49				0
 
 
 --Кластеризация
@@ -420,6 +475,7 @@ create table orders (
     status text,
     some_text text
 );
+
 insert into orders(id, user_id, order_date, status, some_text)
 select generate_series, (random() * 70), date'2019-01-01' + (random() * 300)::int as order_date
         , (array['returned', 'completed', 'placed', 'shipped'])[(random() * 4)::int]
@@ -431,10 +487,15 @@ from generate_series(1, 1000000);
 
 select * from orders;
 
+show work_mem;
 SET work_mem = '64MB';
 
 explain
 select * from orders where order_date = '2019-04-26';
+	Gather  (cost=1000.00..14551.73 rows=3304 width=34)
+	  Workers Planned: 2
+	  ->  Parallel Seq Scan on orders  (cost=0.00..13221.33 rows=1377 width=34)
+	        Filter: (order_date = '2019-04-26'::date)
 
 drop index if exists order_date_idx;
 
@@ -444,4 +505,8 @@ cluster orders using order_date_idx;
 
 analyse orders;
 
+explain
 select * from orders where order_date = '2019-04-26';
+	Index Scan using order_date_idx on orders  (cost=0.42..88.70 rows=3307 width=34)
+	  Index Cond: (order_date = '2019-04-26'::date)
+
