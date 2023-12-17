@@ -1,0 +1,9 @@
+
+
+
+# Копирование файлов по сети на ВМ Яндекса
+C:\PG_DEMO_DB\Demo_Aristov>cd c:\PG_DEMO_DB\Demo_PgPro\
+c:\PG_DEMO_DB\Demo_PgPro>scp demo-medium.zip dima@561.20.942.131:/home/dima/
+
+C:\PG_DEMO_DB\Demo_Aristov>cd c:\PG_DEMO_DB\Demo_PgPro\
+c:\PG_DEMO_DB\Demo_PgPro>scp demo-big.zip dima@541.20.952.13:/home/dima7/
