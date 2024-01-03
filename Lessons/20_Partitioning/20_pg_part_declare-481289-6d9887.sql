@@ -1,4 +1,5 @@
 create database pg_part_less;
+drop database pg_part_less;
 
 -- SELECT current_database();
 
@@ -7,6 +8,7 @@ create schema if not exists by_hash;
 create schema if not exists by_list;
 create schema if not exists by_range;
 
+show max_connections;
 
 do $$
 declare
@@ -127,11 +129,6 @@ end;
 $$ language plpgsql;
 
 
-
-
-
-
-
 select * from no_part.orders order by order_id limit 100;
 select * from by_list.orders order by order_id limit 100;
 select * from by_range.orders order by order_id limit 100;
@@ -142,12 +139,12 @@ select * from by_list.orders order by order_id limit 10;
 select * from by_range.orders order by order_id limit 10;
 select * from by_hash.orders order by order_id limit 10;
 
-/*
+
 select count(*) from no_part.orders;
 select count(*) from by_range.orders;
 select count(*) from by_list.orders;
 select count(*) from by_hash.orders;
-*/
+
 
 
 
@@ -165,8 +162,6 @@ begin
 	end loop;	
 end;
 $$ language plpgsql; -- распределение записей в партициях по hash
-
-
 
 
 explain analyze
@@ -212,7 +207,3 @@ Index Scan using orders_2_pkey on orders_2 orders  (cost=0.43..51661.27 rows=142
   Index Cond: ((client)::text = 'Василий Иванович'::text)
 Planning Time: 0.104 ms
 Execution Time: 19512.877 ms
-
-
-
-

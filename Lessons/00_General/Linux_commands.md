@@ -1,5 +1,4 @@
 
-
 ## Разархивирование файла в Linux
   Установка unzip
     sudo apt install unzip
@@ -9,3 +8,6 @@
     unzip zipped_file.zip -d unzipped_directory
   Просмотр содержимого архива без распаковки
     unzip -l zipped_file.zip
+
+  Запуск SQL файла на БД
+    psql -U postgres -p5432 -d pg_part_less -f /home/dima-a7/demo_pgpro/pg_part_less.sql

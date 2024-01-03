@@ -152,3 +152,6 @@ https://sysadminium.ru/postgresql_configuration_methods/
 
 Монтированный диск
 datapartition ab962ee0-4cd4-4406-bf0d-bce31db7c18b
+
+
+SELECT * FROM pg_stat_activity;

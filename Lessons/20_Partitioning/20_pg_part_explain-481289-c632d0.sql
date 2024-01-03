@@ -1,5 +1,5 @@
 set jit = 'off';
-
+SELECT * FROM pg_stat_activity;
 
 explain analyze
 select sum(order_total) from no_part.orders where order_date between '2020-01-01'::date and '2020-04-01'::date - 1;
@@ -12,24 +12,24 @@ select sum(order_total) from by_range.orders where order_date between '2020-01-0
 
 explain analyze
 select sum(order_total) from no_part.orders where order_date between '2020-01-01'::date and '2020-01-31'::date - 1;
--- Execution Time: 903.899 ms
+-- Execution Time: 903.899 ms  Execution Time: 742.242 ms
 
 explain analyze
 select sum(order_total) from by_range.orders where order_date between '2020-01-01'::date and '2020-01-31'::date - 1;
--- Execution Time: 171.601 ms
+-- Execution Time: 171.601 ms  Execution Time: 46.215 ms
 
 explain analyze
 select sum(order_total) from by_range.orders where client = 'Иван Васильевич';
--- Execution Time: 1162.916 ms
+-- Execution Time: 1162.916 ms   Execution Time: 44109.515 ms
 
 
 explain analyze
 select sum(order_total) from by_list.orders where client = 'Иван Васильевич';
--- Execution Time: 211.359 ms
+-- Execution Time: 211.359 ms    Execution Time: 4315.958 ms
 
 explain analyze
 select sum(order_total) from by_list.orders where client = 'Иван Васильевич' and order_id in (select * from generate_series(1, 1000));
--- Execution Time: 3.176 ms
+-- Execution Time: 3.176 ms  Execution Time: 3.879 ms
 
 
 insert into by_list.orders (client, order_date, order_total) values ('John Connor', '2012-12-12', 777);
@@ -41,7 +41,7 @@ select * from by_list.orders_default;
 
 explain analyze
 select sum(order_total) from by_list.orders where client = 'John Connor';
--- Execution Time: 190.309 ms
+-- Execution Time: 190.309 ms   Execution Time: 0.044 ms
 
 
 select * from by_list.orders_4 limit 100; -- Пётр Алексеевич
@@ -96,7 +96,3 @@ select indisvalid from pg_index where indexrelid::regclass::text  = 'ix00';
 -- на головной не создается, а на секции создать можно
 
 create index concurrently ix01 on by_list.orders_0 using btree (order_date);
-
-
-
-
