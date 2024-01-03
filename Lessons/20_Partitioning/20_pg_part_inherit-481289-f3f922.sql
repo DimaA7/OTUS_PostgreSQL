@@ -59,4 +59,19 @@ explain analyze
 select * from table0 where create_date < date'2020-02-01';
 
 
+explain analyze
+select * from table0 where create_date  between date'2020-01-15' and date'2020-02-15';
+
+Append  (cost=0.00..276.72 rows=10005 width=76) (actual time=0.011..1.638 rows=10000 loops=1)
+  ->  Seq Scan on table0 table0_1  (cost=0.00..0.00 rows=1 width=76) (actual time=0.002..0.002 rows=0 loops=1)
+        Filter: ((create_date >= '2020-01-15'::date) AND (create_date <= '2020-02-15'::date))
+  ->  Seq Scan on table0_2020_01 table0_2  (cost=0.00..21.70 rows=4 width=76) (actual time=0.004..0.004 rows=0 loops=1)
+        Filter: ((create_date >= '2020-01-15'::date) AND (create_date <= '2020-02-15'::date))
+        Rows Removed by Filter: 1
+  ->  Seq Scan on table0_2020_02 table0_3  (cost=0.00..205.00 rows=10000 width=76) (actual time=0.004..1.054 rows=10000 loops=1)
+        Filter: ((create_date >= '2020-01-15'::date) AND (create_date <= '2020-02-15'::date))
+Planning Time: 0.168 ms
+Execution Time: 1.982 ms
+
+
 
