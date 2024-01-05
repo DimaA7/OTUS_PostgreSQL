@@ -8,7 +8,7 @@
 			select * from film f 
 			order by f.rental_rate;
 			
-			create index idx_film_rental_rate on film(rental_rate);
+			create index idx_film_rental_rate on film using btree (rental_rate);
 			drop index idx_film_rental_rate_;
 		План запроса до построения индекса: 
 			Sort  (cost=114.83..117.33 rows=1000 width=390) (actual time=0.579..0.620 rows=1000 loops=1)

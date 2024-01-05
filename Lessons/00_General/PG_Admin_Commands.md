@@ -1,3 +1,8 @@
+# Материалы:
+
+[Learn SQL and Database by Examples](https://www.sqliz.com/)
+
+[PostgreSQL 16.0 [Русский]](https://runebook.dev/ru/docs/postgresql/-index-)
 
 # Запустить виртуальную машину:
 
