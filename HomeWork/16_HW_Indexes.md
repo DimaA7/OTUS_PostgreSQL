@@ -29,7 +29,7 @@
 			Execution Time: 0.321 ms
 		Как видно время работы запроса уменьшилось.
 
- ## Использую тестовую БД bookings (big) от PostgresPro
+ ## Использую тестовую БД demo (big)
 		Создаю индекс на поле departure_airport таблицы flights для запроса:
 			create index idx_flights_departure_airport_btree on flights using btree (departure_airport);
 			drop index idx_flights_departure_airport_btree;
@@ -45,7 +45,7 @@
 					Index Cond: (departure_airport = 'SVO'::bpchar)
 
 # Реализовать индекс для полнотекстового поиска
-  ## Создание полнотекстового индекса на БД demo.bookings (big) от PostgresPro
+  ## Создание полнотекстового индекса на БД demo (big)
 		Создаю колонку с данными для полнотекстового поля	
 		```
 			alter table tickets ADD COLUMN passenger_fts tsvector;
