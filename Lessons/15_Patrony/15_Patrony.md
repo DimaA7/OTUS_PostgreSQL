@@ -30,6 +30,13 @@
 
   [Etcd](https://github.com/coreos/etcd)
 
+  [Пример установки и запуска patroni в среде Docker Swarm. Предполагается, что установка выполняется на пустой машине с OS Debian 10.](https://github.com/tsvetkov-vladimir/docker-patroni)
+
+  [Patroni cluster (with Zookeeper) in a docker swarm on a local machine](https://habr.com/ru/articles/527370/)
+
+  [Patroni 3.0 & Citus: Scalable, Highly Available Postgres](https://www.citusdata.com/blog/2023/03/06/patroni-3-0-and-citus-scalable-ha-postgres/)
+
+  
 # High availability – высокая доступность
     Распределенное хранилище
     • NFS NAS/SAN - https://habr.com/ru/post/137938/
