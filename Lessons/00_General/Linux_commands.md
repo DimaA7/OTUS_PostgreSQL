@@ -1,4 +1,6 @@
 
+[Сайт о Linux Losst](https://losst.pro/terminal)
+
 ## Разархивирование файла в Linux
   Установка unzip
     sudo apt install unzip
