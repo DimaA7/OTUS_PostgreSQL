@@ -19,6 +19,8 @@
   [Как мы построили надёжный кластер PostgreSQL на Patroni](https://habr.com/ru/companies/vk/articles/452846/)
 
   [Управление высокодоступными PostgreSQL кластерами с помощью Patroni | А.Клюкин, А.Кукушкин](https://www.youtube.com/watch?v=lMPYerAYEVs)
+  
+  [Set Up a Highly Available PostgreSQL Cluster using Docker on Ubuntu 20.04](https://www.techsupportpk.com/2022/02/set-up-highly-available-postgresql-cluster-docker-ubuntu.html)
 
   [Set Up a Highly Available PostgreSQL 11 Cluster on Ubuntu 20.04](https://www.techsupportpk.com/2020/02/how-to-set-up-highly-available-postgresql-cluster-ubuntu-19-20.html)
 
