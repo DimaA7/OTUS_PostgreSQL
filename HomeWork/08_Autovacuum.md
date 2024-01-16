@@ -15,65 +15,65 @@
 
 # Проверка pgbench
 
-## Запуск pgbench на ВМ1 с SSD кластер main15 без настроек
-dima@otus-db-pg-vm-1:~$ pgbench -c8 -P 6 -T 60 -p 5432 postgres
-pgbench (15.2 (Ubuntu 15.2-1.pgdg22.04+1))
-starting vacuum...end.
-progress: 6.0 s, 531.8 tps, lat 14.984 ms stddev 9.387, 0 failed
-progress: 12.0 s, 438.3 tps, lat 18.253 ms stddev 11.553, 0 failed
-progress: 18.0 s, 526.7 tps, lat 15.187 ms stddev 10.500, 0 failed
-progress: 24.0 s, 461.2 tps, lat 17.351 ms stddev 15.247, 0 failed
-progress: 30.0 s, 623.0 tps, lat 12.830 ms stddev 8.470, 0 failed
-progress: 36.0 s, 566.5 tps, lat 14.132 ms stddev 8.955, 0 failed
-progress: 42.0 s, 546.7 tps, lat 14.619 ms stddev 10.815, 0 failed
-progress: 48.0 s, 590.8 tps, lat 13.556 ms stddev 9.597, 0 failed
-progress: 54.0 s, 393.0 tps, lat 20.343 ms stddev 22.933, 0 failed
-progress: 60.0 s, 480.0 tps, lat 16.671 ms stddev 14.826, 0 failed
-transaction type: <builtin: TPC-B (sort of)>
-scaling factor: 1
-query mode: simple
-number of clients: 8
-number of threads: 1
-maximum number of tries: 1
-duration: 60 s
-number of transactions actually processed: 30956
-number of failed transactions: 0 (0.000%)
-latency average = 15.504 ms
-latency stddev = 12.565 ms
-initial connection time = 15.592 ms
-tps = 515.891460 (without initial connection time)
-dima@otus-db-pg-vm-1:~$
+ ## Запуск pgbench на ВМ1 с SSD кластер main15 без настроек
+    dima@otus-db-pg-vm-1:~$ pgbench -c8 -P 6 -T 60 -p 5432 postgres
+    pgbench (15.2 (Ubuntu 15.2-1.pgdg22.04+1))
+    starting vacuum...end.
+    progress: 6.0 s, 531.8 tps, lat 14.984 ms stddev 9.387, 0 failed
+    progress: 12.0 s, 438.3 tps, lat 18.253 ms stddev 11.553, 0 failed
+    progress: 18.0 s, 526.7 tps, lat 15.187 ms stddev 10.500, 0 failed
+    progress: 24.0 s, 461.2 tps, lat 17.351 ms stddev 15.247, 0 failed
+    progress: 30.0 s, 623.0 tps, lat 12.830 ms stddev 8.470, 0 failed
+    progress: 36.0 s, 566.5 tps, lat 14.132 ms stddev 8.955, 0 failed
+    progress: 42.0 s, 546.7 tps, lat 14.619 ms stddev 10.815, 0 failed
+    progress: 48.0 s, 590.8 tps, lat 13.556 ms stddev 9.597, 0 failed
+    progress: 54.0 s, 393.0 tps, lat 20.343 ms stddev 22.933, 0 failed
+    progress: 60.0 s, 480.0 tps, lat 16.671 ms stddev 14.826, 0 failed
+    transaction type: <builtin: TPC-B (sort of)>
+    scaling factor: 1
+    query mode: simple
+    number of clients: 8
+    number of threads: 1
+    maximum number of tries: 1
+    duration: 60 s
+    number of transactions actually processed: 30956
+    number of failed transactions: 0 (0.000%)
+    latency average = 15.504 ms
+    latency stddev = 12.565 ms
+    initial connection time = 15.592 ms
+    tps = 515.891460 (without initial connection time)
+    dima@otus-db-pg-vm-1:~$
 
-## Запуск pgbench на ВМ1 с SSD кластер main15 c целевыми настройками
-dima@otus-db-pg-vm-1:~$ pgbench -c8 -P 6 -T 60 -p 5432 postgres
-pgbench (15.2 (Ubuntu 15.2-1.pgdg22.04+1))
-starting vacuum...end.
-progress: 6.0 s, 321.7 tps, lat 24.743 ms stddev 24.910, 0 failed
-progress: 12.0 s, 514.0 tps, lat 15.586 ms stddev 10.282, 0 failed
-progress: 18.0 s, 569.7 tps, lat 14.043 ms stddev 8.370, 0 failed
-progress: 24.0 s, 483.7 tps, lat 16.542 ms stddev 52.186, 0 failed
-progress: 30.0 s, 624.3 tps, lat 12.803 ms stddev 7.368, 0 failed
-progress: 36.0 s, 445.2 tps, lat 17.984 ms stddev 15.950, 0 failed
-progress: 42.0 s, 567.7 tps, lat 14.082 ms stddev 8.807, 0 failed
-progress: 48.0 s, 498.8 tps, lat 16.028 ms stddev 8.215, 0 failed
-progress: 54.0 s, 451.2 tps, lat 17.743 ms stddev 13.582, 0 failed
-progress: 60.0 s, 655.2 tps, lat 12.215 ms stddev 7.659, 0 failed
-transaction type: <builtin: TPC-B (sort of)>
-scaling factor: 1
-query mode: simple
-number of clients: 8
-number of threads: 1
-maximum number of tries: 1
-duration: 60 s
-number of transactions actually processed: 30796
-number of failed transactions: 0 (0.000%)
-latency average = 15.584 ms
-latency stddev = 19.763 ms
-initial connection time = 15.167 ms
-tps = 513.229911 (without initial connection time)
+ ## Запуск pgbench на ВМ1 с SSD кластер main15 c целевыми настройками
+      dima@otus-db-pg-vm-1:~$ pgbench -c8 -P 6 -T 60 -p 5432 postgres
+      pgbench (15.2 (Ubuntu 15.2-1.pgdg22.04+1))
+      starting vacuum...end.
+      progress: 6.0 s, 321.7 tps, lat 24.743 ms stddev 24.910, 0 failed
+      progress: 12.0 s, 514.0 tps, lat 15.586 ms stddev 10.282, 0 failed
+      progress: 18.0 s, 569.7 tps, lat 14.043 ms stddev 8.370, 0 failed
+      progress: 24.0 s, 483.7 tps, lat 16.542 ms stddev 52.186, 0 failed
+      progress: 30.0 s, 624.3 tps, lat 12.803 ms stddev 7.368, 0 failed
+      progress: 36.0 s, 445.2 tps, lat 17.984 ms stddev 15.950, 0 failed
+      progress: 42.0 s, 567.7 tps, lat 14.082 ms stddev 8.807, 0 failed
+      progress: 48.0 s, 498.8 tps, lat 16.028 ms stddev 8.215, 0 failed
+      progress: 54.0 s, 451.2 tps, lat 17.743 ms stddev 13.582, 0 failed
+      progress: 60.0 s, 655.2 tps, lat 12.215 ms stddev 7.659, 0 failed
+      transaction type: <builtin: TPC-B (sort of)>
+      scaling factor: 1
+      query mode: simple
+      number of clients: 8
+      number of threads: 1
+      maximum number of tries: 1
+      duration: 60 s
+      number of transactions actually processed: 30796
+      number of failed transactions: 0 (0.000%)
+      latency average = 15.584 ms
+      latency stddev = 19.763 ms
+      initial connection time = 15.167 ms
+      tps = 513.229911 (without initial connection time)
 
 
-## Инициализация pgbench на ВМ1 с SSD
+ ## Инициализация pgbench на ВМ1 с SSD
 otus-db-pg-vm-1
 vCPU - 2
 RAM 4
