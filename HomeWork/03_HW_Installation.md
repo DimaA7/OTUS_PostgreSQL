@@ -169,12 +169,19 @@
             sudo shutdown -r now
         Log in to docker hub from your Ubuntu command line: 
             docker login
+            Log in with your Docker ID or email address to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com/ to create one.
+            You can log in with your password or a Personal Access Token (PAT). Using a limited-scope PAT grants better security and is required for organizations using SSO. Learn more at https://docs.docker.com/go/access-tokens/
+
             username: your_docker_hub_username
             password: your_password
+            WARNING! Your password will be stored unencrypted in /home/dima-a7/.docker/config.json.
+            Configure a credential helper to remove this warning. See
+            https://docs.docker.com/engine/reference/commandline/login/#credentials-store
 
 # сделать каталог /var/lib/postgres
 
 # развернуть контейнер с PostgreSQL 15 смонтировав в него /var/lib/postgresql
+
 
 # развернуть контейнер с клиентом postgres
 
