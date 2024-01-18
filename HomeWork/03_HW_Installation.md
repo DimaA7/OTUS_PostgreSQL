@@ -178,6 +178,13 @@
             Configure a credential helper to remove this warning. See
             https://docs.docker.com/engine/reference/commandline/login/#credentials-store
 
+        dima-a7@otus:~$ docker pull ubuntu:20.04
+            20.04: Pulling from library/ubuntu
+            527f5363b98e: Pull complete
+            Digest: sha256:f2034e7195f61334e6caff6ecf2e965f92d11e888309065da85ff50c617732b8
+            Status: Downloaded newer image for ubuntu:20.04
+            docker.io/library/ubuntu:20.04
+            
 # сделать каталог /var/lib/postgres
 
 # развернуть контейнер с PostgreSQL 15 смонтировав в него /var/lib/postgresql
