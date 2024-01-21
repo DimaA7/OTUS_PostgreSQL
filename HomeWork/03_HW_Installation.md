@@ -67,6 +67,17 @@
             Fetched 7,086 kB in 1s (4,787 kB/s)
             Reading package lists... Done
 
+        Для установки докера потребуется дополнительно загрузить пакетs:
+            curl — необходим для работы с веб-ресурсами;
+            software-properties-common — пакет для управления ПО с помощью скриптов;
+            ca-certificates — содержит информацию о центрах сертификации;
+            apt-transport-https — необходим для передачи данных по протоколу HTTPS.
+            gnupg
+            lsb-release
+        Cкачаем их:
+  
+        sudo apt install curl software-properties-common ca-certificates apt-transport-https -y
+
         dima@otus:~$  sudo apt install ca-certificates curl gnupg lsb-release
             Reading package lists... Done
             Building dependency tree... Done
@@ -78,12 +89,27 @@
             gnupg is already the newest version (2.2.27-3ubuntu2.1).
             gnupg set to manually installed.
             0 upgraded, 0 newly installed, 0 to remove and 29 not upgraded.
+   
+
+       Импортируем GPG-ключ. GPG-ключ нужен для верификации подписей ПО. Он понадобится для добавления репозитория докера в локальный список. 
+            wget -O- https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor | sudo tee /etc/apt/keyrings/docker.gpg > /dev/null
+
+            dima-a7@otus:~$ wget -O- https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor | sudo tee /etc/apt/keyrings/docker.gpg > /dev/null
+            --2024-01-20 21:58:44--  https://download.docker.com/linux/ubuntu/gpg
+            Resolving download.docker.com (download.docker.com)... 65.9.66.72, 65.9.66.46, 65.9.66.54, ...
+            Connecting to download.docker.com (download.docker.com)|65.9.66.72|:443... connected.
+            HTTP request sent, awaiting response... 200 OK
+            Length: 3817 (3.7K) [binary/octet-stream]
+            Saving to: ‘STDOUT’
+            -                     100%[=======================>]   3.73K  --.-KB/s    in 0s
+
+2024-01-20 21:58:44 (1.89 GB/s) - written to stdout [3817/3817]
 
         Установка официального APT репозитория docker на Ubuntu:
             curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/docker.gpg
             echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/trusted.gpg.d/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-        Update APT cache:
+        Обновляем индексы пакетов apt:
             sudo apt update
 
         Install latest available release of docker on your Ubuntu:
@@ -160,13 +186,16 @@
 
                 No VM guests are running outdated hypervisor (qemu) binaries on this host.
 
-        Add your Ubuntu user to docker group in order to execute docker command without sudo:
+        Add Ubuntu user to docker group in order to execute docker command without sudo:
             sudo usermod -aG docker $dima
             Список пользователей группы в Linux в файле /etc/group
+
         Restart docker to make changes effect: 
             sudo systemctl restart docker
+
         Reboot your Ubuntu machine: 
             sudo shutdown -r now
+
         Log in to docker hub from your Ubuntu command line: 
             docker login
             Log in with your Docker ID or email address to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com/ to create one.
@@ -185,8 +214,46 @@
             Status: Downloaded newer image for ubuntu:20.04
             docker.io/library/ubuntu:20.04
             
-# сделать каталог /var/lib/postgres
 
+
+            dima-a7@otus:~$ sudo apt-get install git
+            Reading package lists... Done
+            Building dependency tree... Done
+            Reading state information... Done
+            git is already the newest version (1:2.34.1-1ubuntu1.10).
+            git set to manually installed.
+            0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.
+
+
+            Prepare a docker container with all the required packages
+
+        -- 2. подключаем созданную сеть к контейнеру сервера Postgres:
+        sudo docker run --name pg-server --network pg-net -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 -v /var/lib/postgres:/var/lib/postgresql/data postgres:15
+
+        -- 3. Запускаем отдельный контейнер с клиентом в общей сети с БД: 
+        sudo docker run -it --rm --network pg-net --name pg-client postgres:15 psql -h pg-server -U postgres
+
+        
+        Создание контейнера docker используя ubuntu 20.04 image и установка в него пакета postgres
+            docker run -it --name postgres_release15 -e DEBIAN_FRONTEND=noninteractive ubuntu:20.04
+
+        Установка пакетов в контейнер  docker: 
+            apt update; apt install -y nano wget ca-certificates curl gnupg lsb-release
+
+        Установка в докере PostgreSQL из репозитория:
+
+             curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
+            sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+            apt update
+
+        Type following command on docker container shell prompt to install PostgreSQL release 12:
+            apt -y install postgresql-15
+            ln -s /usr/lib/postgresql/15/bin/* /usr/sbin/
+            rm -rf /var/lib/postgresql/15/main/*
+
+
+# сделать каталог /var/lib/postgres
+show data_directory;
 # развернуть контейнер с PostgreSQL 15 смонтировав в него /var/lib/postgresql
 
 
