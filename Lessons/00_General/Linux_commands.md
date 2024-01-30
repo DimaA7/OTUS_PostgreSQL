@@ -12,7 +12,7 @@
     unzip -l zipped_file.zip
 
   Запуск SQL файла на БД
-    psql -U postgres -p5432 -d pg_part_less -f /home/dima-a7/demo_pgpro/pg_part_less.sql
+    psql -U postgres -p5432 -d pg_part_less -f /home/dima/demo_pgpro/pg_part_less.sql
 
 
     ## The List of Linux Commands
@@ -102,3 +102,57 @@
 | [tee](https://linuxopsys.com/topics/tee-command-in-linux-with-examples) | Redirect output to multiple files/streams | Filter |
 | [sort](https://linuxopsys.com/topics/linux-sort-command) | Sort lines of text files | Filter |
 | [xargs](https://linuxopsys.com/topics/xargs-command-with-examples) | Execute commands from standard input | Filter |
+
+
+# Посмотреть обновления
+   apt list --upgradable
+
+# Применить обновления
+  sudo apt update 
+
+# Применить все обновления
+  sudo apt full-upgrade
+
+# Применить обновления для браузера firefox
+  sudo apt full-update firefox
+
+
+# Обновление информации о пакетах, имеющихся в системе, и тех, что хранятся в подключенных репозиториях.
+        dima@otus:~$ sudo apt-get update
+            Hit:1 http://mirror.yandex.ru/ubuntu jammy InRelease
+            Get:2 http://mirror.yandex.ru/ubuntu jammy-updates InRelease [119 kB]
+            Get:3 http://apt.postgresql.org/pub/repos/apt jammy-pgdg InRelease [123 kB]
+            Get:4 http://security.ubuntu.com/ubuntu jammy-security InRelease [110 kB]
+            Hit:5 http://mirror.yandex.ru/ubuntu jammy-backports InRelease
+            Get:6 https://download.docker.com/linux/ubuntu jammy InRelease [48.8 kB]
+            Get:7 http://mirror.yandex.ru/ubuntu jammy-updates/main amd64 Packages [1,280 kB]
+            Get:8 http://mirror.yandex.ru/ubuntu jammy-updates/main Translation-en [262 kB]
+            Get:9 http://mirror.yandex.ru/ubuntu jammy-updates/restricted amd64 Packages [1,276 kB]
+            Get:10 http://mirror.yandex.ru/ubuntu jammy-updates/restricted Translation-en [208 kB]
+            Get:11 http://mirror.yandex.ru/ubuntu jammy-updates/universe amd64 Packages [1,024 kB]
+            Get:12 http://mirror.yandex.ru/ubuntu jammy-updates/universe Translation-en [228 kB]
+            Get:13 http://mirror.yandex.ru/ubuntu jammy-updates/multiverse amd64 Packages [42.1 kB]
+            Get:14 http://apt.postgresql.org/pub/repos/apt jammy-pgdg/main amd64 Packages [297 kB]
+            Get:15 http://security.ubuntu.com/ubuntu jammy-security/main amd64 Packages [1,062 kB]
+            Get:16 https://download.docker.com/linux/ubuntu jammy/stable amd64 Packages [23.1 kB]
+            Get:17 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [827 kB]
+            Get:18 http://security.ubuntu.com/ubuntu jammy-security/universe Translation-en [157 kB]
+            Fetched 7,086 kB in 1s (4,787 kB/s)
+            Reading package lists... Done
+
+      Обновляем индексы пакетов apt:
+            sudo apt update
+
+     
+        Reboot your Ubuntu machine: 
+            sudo shutdown -r now
+
+
+
+            dima@otus:~$ sudo apt-get install git
+            Reading package lists... Done
+            Building dependency tree... Done
+            Reading state information... Done
+            git is already the newest version (1:2.34.1-1ubuntu1.10).
+            git set to manually installed.
+            0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.

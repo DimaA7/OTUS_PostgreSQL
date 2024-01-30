@@ -1,2 +1,5 @@
 # Настройка таймаута работы ssh клиента
 [Idle SSH connection gets reset in ubuntu 20.04 WSL (Windows10)](https://superuser.com/questions/1591674/idle-ssh-connection-gets-reset-in-ubuntu-20-04-wsl-windows10)
+
+
+

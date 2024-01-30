@@ -17,6 +17,9 @@
 [Создание docker контейнера в Unix/Linux](http://linux-notes.org/sozdanie-docker-kontejnera-v-unix-linux/)
 [Остановить/Удалить все Docker контейнеры/images](http://linux-notes.org/ustanovka-docker-na-debian-ubuntu/)
 
+
+![Процесс изменения статуса контейнера Docker](docer_container_statuses_processing.png)
+
 # Команды
 # Установка
     Linux
@@ -45,6 +48,27 @@
         docker push eon01/nginx
         docker push eon01/nginx localhost:5000/myadmin/nginx
     
+# Служба Docker
+ ## Остановить службу Docker:
+  Прежде чем мы сможем перезапустить демон Docker, нам нужно остановить службу Docker. Откройте окно терминала и выполните следующую команду:
+     sudo service docker stop
+ ## Проверьте состояние службы Docker:
+  Чтобы убедиться, что служба Docker успешно остановлена, мы можем проверить ее состояние. Выполните следующую команду:
+     sudo service docker status
+  Если служба Docker остановлена, вы должны увидеть сообщение, указывающее, что служба не запущена.
+ ## Перезапустите Docker Daemon:
+  Теперь, когда служба Docker остановлена, пришло время перезапустить Docker daemon. Выполните следующую команду, чтобы запустить Docker daemon:
+     sudo service docker start
+  Теперь запустится демон Docker, инициализирующий все необходимые компоненты для правильной работы Docker.
+ ## Проверьте состояние демона Docker:
+   Чтобы подтвердить, что демон Docker успешно перезапущен, вы можете проверить его состояние. Выполните следующую команду:
+      sudo service docker status
+   Если демон Docker успешно запущен, вы должны увидеть сообщение, указывающее на то, что служба Docker запущена.
+ ## Протестируйте функциональность Docker:
+  После перезапуска демона Docker рекомендуется протестировать функциональность Docker, чтобы убедиться, что все работает должным образом. Вы можете сделать это, выполнив простую команду Docker, например:
+    docker version
+  Если команда выполняется успешно и отображается информация о версии Docker, это означает, что Docker теперь функционирует должным образом.
+
 # Первые действия с контейнерами
  ## Создание контейнера
         docker create -t -i eon01/infinite --name infinite
@@ -91,11 +115,11 @@
     Выполняющиеся процессы
         docker top infinite
 
-Использование ресурсов
+# Использование ресурсов
 
-docker stats infinite
+   docker stats infinite
 
-Изменения в файлах или директориях файловой системы контейнера
+# Изменения в файлах или директориях файловой системы контейнера
 
 docker diff infinite
 
@@ -152,6 +176,11 @@ docker diff infinite
         docker run -it -d --network=MyOverlayNetwork nginx
  ## Отключение контейнера от сети
         docker network disconnect MyOverlayNetwork nginx
+ ## Посмотреть в каких сетях подключен контейнер с1
+        docker inspect c1 -f "{{json .NetworkSettings.Networks }}"
+ ## Посмотреть контейнеры в сети
+        docker network inspect MyOverlayNetwork -f "{{json .Containers }}"
+
 
 # Очистка Docker
  ## Удаление работающего контейнера
@@ -162,36 +191,36 @@ docker diff infinite
         docker rm $(docker ps -a -f status=exited -q)
 
     удаление всех остановленных контейнеров
-    docker container prune
-    docker rm `docker ps -a -q`
+      docker container prune
+      docker rm `docker ps -a -q`
     удаление контейнеров, остановленных более суток назад
-    docker container prune --filter "until=24h"
+      docker container prune --filter "until=24h"
     удаление образа
-    docker rmi nginx
+      docker rmi nginx
     удаление неиспользуемых (dangling) образов
-    docker image prune
-    docker rmi $(docker images -f dangling=true -q)
+      docker image prune
+      docker rmi $(docker images -f dangling=true -q)
     удаление неиспользуемых (dangling) образов даже с тегами
-    docker image prune -a
+      docker image prune -a
     удаление всех образов
-    docker rmi $(docker images -a -q)
+      docker rmi $(docker images -a -q)
     удаление всех образов без тегов
-    docker rmi -f $(docker images | grep "^<none>" | awk "{print $3}")
+      docker rmi -f $(docker images | grep "^<none>" | awk "{print $3}")
     остановка и удаление всех контейнеров
-    docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
+      docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
     удаление неиспользуемых (dangling) томов
-    docker volume prune
-    docker volume rm $(docker volume ls -f dangling=true -q)
+      docker volume prune
+      docker volume rm $(docker volume ls -f dangling=true -q)
     удаление неиспользуемых (dangling) томов по фильтру
-    docker volume prune --filter "label!=keep"
+      docker volume prune --filter "label!=keep"
     удаление неиспользуемых сетей
-    docker network prune
+      docker network prune
     удаление всех неиспользуемых объектов
-    docker system prune
+      docker system prune
     о умолчанию для Docker 17.06.1+ тома не удаляются. Чтобы удалились и они тоже:
-    docker system prune --volumes
+      docker system prune --volumes
     удалить лишние контейнеры, образы, сети и томы:
-       docker <system|container|image|volume|network> prune
+      docker <system|container|image|volume|network> prune
 
 # Docker Swarm
 
@@ -199,25 +228,25 @@ docker diff infinite
     curl -ssl https://get.docker.com | bash
     Прим. перев.: в Docker версий 1.12.0+ ничего дополнительно устанавливать не требуется, т.к. Docker Swarm встроен в Docker Engine в виде специального режима (Swarm mode).
 Инициализация Swarm
-docker swarm init --advertise-addr 192.168.10.1
+  docker swarm init --advertise-addr 192.168.10.1
 Подключение рабочего узла (worker) к Swarm
-docker swarm join-token worker
+  docker swarm join-token worker
 Подключение управляющего узла (manager) к Swarm
-docker swarm join-token manager
+  docker swarm join-token manager
 Список сервисов
-docker service ls
+  docker service ls
 Список узлов
-docker node ls
+  docker node ls
 Создание сервиса
-docker service create --name vote -p 8080:80 instavote/vote
+  docker service create --name vote -p 8080:80 instavote/vote
 Список заданий Swarm
-docker service ps
+  docker service ps
 Масштабирование сервиса
-docker service scale vote=3
+  docker service scale vote=3
 Обновление сервиса
-docker service update --image instavote/vote:movies vote
-docker service update --force --update-parallelism 1 --update-delay 30s nginx
-docker service update --update-parallelism 5--update-delay 2s --image instavote/vote:indent vote
-docker service update --limit-cpu 2 nginx
-docker service update --replicas=5 nginx
+  docker service update --image instavote/vote:movies vote
+  docker service update --force --update-parallelism 1 --update-delay 30s nginx
+  docker service update --update-parallelism 5--update-delay 2s --image instavote/vote:indent vote
+  docker service update --limit-cpu 2 nginx
+  docker service update --replicas=5 nginx
 

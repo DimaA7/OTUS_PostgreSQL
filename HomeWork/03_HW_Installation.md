@@ -46,38 +46,16 @@
 
   ## Обновление информации о пакетах, имеющихся в системе, и тех, что хранятся в подключенных репозиториях.
         dima@otus:~$ sudo apt-get update
-            Hit:1 http://mirror.yandex.ru/ubuntu jammy InRelease
-            Get:2 http://mirror.yandex.ru/ubuntu jammy-updates InRelease [119 kB]
-            Get:3 http://apt.postgresql.org/pub/repos/apt jammy-pgdg InRelease [123 kB]
-            Get:4 http://security.ubuntu.com/ubuntu jammy-security InRelease [110 kB]
-            Hit:5 http://mirror.yandex.ru/ubuntu jammy-backports InRelease
-            Get:6 https://download.docker.com/linux/ubuntu jammy InRelease [48.8 kB]
-            Get:7 http://mirror.yandex.ru/ubuntu jammy-updates/main amd64 Packages [1,280 kB]
-            Get:8 http://mirror.yandex.ru/ubuntu jammy-updates/main Translation-en [262 kB]
-            Get:9 http://mirror.yandex.ru/ubuntu jammy-updates/restricted amd64 Packages [1,276 kB]
-            Get:10 http://mirror.yandex.ru/ubuntu jammy-updates/restricted Translation-en [208 kB]
-            Get:11 http://mirror.yandex.ru/ubuntu jammy-updates/universe amd64 Packages [1,024 kB]
-            Get:12 http://mirror.yandex.ru/ubuntu jammy-updates/universe Translation-en [228 kB]
-            Get:13 http://mirror.yandex.ru/ubuntu jammy-updates/multiverse amd64 Packages [42.1 kB]
-            Get:14 http://apt.postgresql.org/pub/repos/apt jammy-pgdg/main amd64 Packages [297 kB]
-            Get:15 http://security.ubuntu.com/ubuntu jammy-security/main amd64 Packages [1,062 kB]
-            Get:16 https://download.docker.com/linux/ubuntu jammy/stable amd64 Packages [23.1 kB]
-            Get:17 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [827 kB]
-            Get:18 http://security.ubuntu.com/ubuntu jammy-security/universe Translation-en [157 kB]
-            Fetched 7,086 kB in 1s (4,787 kB/s)
-            Reading package lists... Done
-
-        Для установки докера потребуется дополнительно загрузить пакетs:
+             Для установки докера потребуется дополнительно загрузить пакетs:
             curl — необходим для работы с веб-ресурсами;
             software-properties-common — пакет для управления ПО с помощью скриптов;
             ca-certificates — содержит информацию о центрах сертификации;
             apt-transport-https — необходим для передачи данных по протоколу HTTPS.
             gnupg
             lsb-release
-        Cкачаем их:
-  
-        sudo apt install curl software-properties-common ca-certificates apt-transport-https -y
-
+       
+   ## Cкачаем их:
+          sudo apt install curl software-properties-common ca-certificates apt-transport-https -y
         dima@otus:~$  sudo apt install ca-certificates curl gnupg lsb-release
             Reading package lists... Done
             Building dependency tree... Done
@@ -90,11 +68,10 @@
             gnupg set to manually installed.
             0 upgraded, 0 newly installed, 0 to remove and 29 not upgraded.
    
-
-       Импортируем GPG-ключ. GPG-ключ нужен для верификации подписей ПО. Он понадобится для добавления репозитория докера в локальный список. 
+  ## Импортируем GPG-ключ. GPG-ключ нужен для верификации подписей ПО. Он понадобится для добавления репозитория докера в локальный список. 
             wget -O- https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor | sudo tee /etc/apt/keyrings/docker.gpg > /dev/null
 
-            dima-a7@otus:~$ wget -O- https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor | sudo tee /etc/apt/keyrings/docker.gpg > /dev/null
+            dima@otus:~$ wget -O- https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor | sudo tee /etc/apt/keyrings/docker.gpg > /dev/null
             --2024-01-20 21:58:44--  https://download.docker.com/linux/ubuntu/gpg
             Resolving download.docker.com (download.docker.com)... 65.9.66.72, 65.9.66.46, 65.9.66.54, ...
             Connecting to download.docker.com (download.docker.com)|65.9.66.72|:443... connected.
@@ -102,17 +79,16 @@
             Length: 3817 (3.7K) [binary/octet-stream]
             Saving to: ‘STDOUT’
             -                     100%[=======================>]   3.73K  --.-KB/s    in 0s
+            2024-01-20 21:58:44 (1.89 GB/s) - written to stdout [3817/3817]
 
-2024-01-20 21:58:44 (1.89 GB/s) - written to stdout [3817/3817]
-
-        Установка официального APT репозитория docker на Ubuntu:
+  ## Установка официального APT репозитория docker на Ubuntu:
             curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/docker.gpg
             echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/trusted.gpg.d/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-        Обновляем индексы пакетов apt:
+  ## Обновляем индексы пакетов apt:
             sudo apt update
 
-        Install latest available release of docker on your Ubuntu:
+  ## Install latest available release of docker on your Ubuntu:
             sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose docker-compose-plugin
                 Reading package lists... Done
                 Building dependency tree... Done
@@ -186,28 +162,28 @@
 
                 No VM guests are running outdated hypervisor (qemu) binaries on this host.
 
-        Add Ubuntu user to docker group in order to execute docker command without sudo:
+  ## Add Ubuntu user to docker group in order to execute docker command without sudo:
             sudo usermod -aG docker $dima
             Список пользователей группы в Linux в файле /etc/group
 
-        Restart docker to make changes effect: 
+  ## Restart docker to make changes effect: 
             sudo systemctl restart docker
 
-        Reboot your Ubuntu machine: 
+  ## Reboot Ubuntu machine: 
             sudo shutdown -r now
 
-        Log in to docker hub from your Ubuntu command line: 
+  ## Log in to docker hub from your Ubuntu command line: 
             docker login
             Log in with your Docker ID or email address to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com/ to create one.
             You can log in with your password or a Personal Access Token (PAT). Using a limited-scope PAT grants better security and is required for organizations using SSO. Learn more at https://docs.docker.com/go/access-tokens/
 
             username: your_docker_hub_username
             password: your_password
-            WARNING! Your password will be stored unencrypted in /home/dima-a7/.docker/config.json.
+            WARNING! Your password will be stored unencrypted in /home/dima/.docker/config.json.
             Configure a credential helper to remove this warning. See
             https://docs.docker.com/engine/reference/commandline/login/#credentials-store
 
-        dima-a7@otus:~$ docker pull ubuntu:20.04
+            dima@otus:~$ docker pull ubuntu:20.04
             20.04: Pulling from library/ubuntu
             527f5363b98e: Pull complete
             Digest: sha256:f2034e7195f61334e6caff6ecf2e965f92d11e888309065da85ff50c617732b8
@@ -215,8 +191,7 @@
             docker.io/library/ubuntu:20.04
             
 
-
-            dima-a7@otus:~$ sudo apt-get install git
+            dima@otus:~$ sudo apt-get install git
             Reading package lists... Done
             Building dependency tree... Done
             Reading state information... Done
@@ -224,14 +199,17 @@
             git set to manually installed.
             0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.
 
-
             Prepare a docker container with all the required packages
 
-        -- 2. подключаем созданную сеть к контейнеру сервера Postgres:
-        sudo docker run --name pg-server --network pg-net -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 -v /var/lib/postgres:/var/lib/postgresql/data postgres:15
+       
+
+
+
 
         -- 3. Запускаем отдельный контейнер с клиентом в общей сети с БД: 
         sudo docker run -it --rm --network pg-net --name pg-client postgres:15 psql -h pg-server -U postgres
+
+
 
         
         Создание контейнера docker используя ubuntu 20.04 image и установка в него пакета postgres
@@ -251,15 +229,23 @@
             ln -s /usr/lib/postgresql/15/bin/* /usr/sbin/
             rm -rf /var/lib/postgresql/15/main/*
 
+# сделать каталог /var/lib/postgres/docker
+    show data_directory;
+    Создал каталог /var/lib/postgres/docker
 
-# сделать каталог /var/lib/postgres
-show data_directory;
-# развернуть контейнер с PostgreSQL 15 смонтировав в него /var/lib/postgresql
-
+# развернуть контейнер с PostgreSQL 15 смонтировав в него /var/lib/postgresql/docker
+    sudo docker run --name pg-server --network pg-net -e POSTGRES_PASSWORD=postgres -d -p 5437:5432 -v /var/lib/postgres/docker:/var/lib/postgresql/data postgres:15
 
 # развернуть контейнер с клиентом postgres
+    dima@otus:~$ sudo docker run -it --rm --network pg-net --name pg-client postgres:15 psql -h pg-server -U postgres
+    Password for user postgres:
+    psql (15.4 (Debian 15.4-2.pgdg120+1))
+    Type "help" for help.
 
+    postgres=#
 # подключится из контейнера с клиентом к контейнеру с сервером и сделать таблицу с парой строк
+
+
 
 # подключится к контейнеру с сервером с ноутбука/компьютера извне инстансов GCP/ЯО/места установки докера
 
