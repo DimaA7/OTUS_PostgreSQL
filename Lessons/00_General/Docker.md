@@ -115,6 +115,14 @@
     Выполняющиеся процессы
         docker top infinite
 
+
+# Подключение к контейнеру
+  docker exec -ti NAME_OF_CONTAINER psql -U YOUR_POSTGRES_USERNAME
+    Важно:
+      docker exec запускает команду psql в запученом контейнере.
+      docker run запустит новый контейнер.
+
+
 # Использование ресурсов
 
    docker stats infinite
