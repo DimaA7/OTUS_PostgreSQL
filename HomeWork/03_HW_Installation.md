@@ -192,7 +192,7 @@
             
 # сделать каталог /var/lib/postgres
     
-    Создал сой каталог /var/lib/postgres/docker
+    Создал свой каталог /var/lib/postgres/docker
 
 # развернуть контейнер с PostgreSQL 15 смонтировав в него /var/lib/postgresql/docker
     sudo docker run --name pg-server --network pg-net -e POSTGRES_PASSWORD=postgres -d -p 5437:5432 -v /var/lib/postgres/docker:/var/lib/postgresql/data postgres:15

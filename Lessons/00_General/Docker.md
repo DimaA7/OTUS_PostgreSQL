@@ -1,4 +1,4 @@
-**Шпаргалка с командами Docker**
+**Работа с Docker**
 
 # Материалы
 [Пример разворачивания сервера в контейнере Docker на Yandex Cloud](https://green-api.com/docs/sdk/python/pythonWebhookServer/serverDockerOnYandexCloud/)
@@ -17,11 +17,10 @@
 [Создание docker контейнера в Unix/Linux](http://linux-notes.org/sozdanie-docker-kontejnera-v-unix-linux/)
 [Остановить/Удалить все Docker контейнеры/images](http://linux-notes.org/ustanovka-docker-na-debian-ubuntu/)
 
+# Процессы изменения статусов контейнера Docker
+![Процессы изменения статусов контейнера Docker](docer_container_statuses_processing.png)
 
-![Процесс изменения статуса контейнера Docker](docer_container_statuses_processing.png)
-
-# Команды
-# Установка
+# Установка docker
     Linux
         curl -sSL https://get.docker.com/ | sh
     Mac
@@ -50,64 +49,67 @@
     
 # Служба Docker
  ## Остановить службу Docker:
-  Прежде чем мы сможем перезапустить демон Docker, нам нужно остановить службу Docker. Откройте окно терминала и выполните следующую команду:
+    Прежде чем мы сможем перезапустить демон Docker, нам нужно остановить службу Docker. Откройте окно терминала и выполните следующую команду:
      sudo service docker stop
  ## Проверьте состояние службы Docker:
-  Чтобы убедиться, что служба Docker успешно остановлена, мы можем проверить ее состояние. Выполните следующую команду:
+    Чтобы убедиться, что служба Docker успешно остановлена, мы можем проверить ее состояние. Выполните следующую команду:
      sudo service docker status
-  Если служба Docker остановлена, вы должны увидеть сообщение, указывающее, что служба не запущена.
+    Если служба Docker остановлена, вы должны увидеть сообщение, указывающее, что служба не запущена.
  ## Перезапустите Docker Daemon:
-  Теперь, когда служба Docker остановлена, пришло время перезапустить Docker daemon. Выполните следующую команду, чтобы запустить Docker daemon:
+    Теперь, когда служба Docker остановлена, пришло время перезапустить Docker daemon. Выполните следующую команду, чтобы запустить Docker daemon:
      sudo service docker start
-  Теперь запустится демон Docker, инициализирующий все необходимые компоненты для правильной работы Docker.
+    Теперь запустится демон Docker, инициализирующий все необходимые компоненты для правильной работы Docker.
  ## Проверьте состояние демона Docker:
-   Чтобы подтвердить, что демон Docker успешно перезапущен, вы можете проверить его состояние. Выполните следующую команду:
+    Чтобы подтвердить, что демон Docker успешно перезапущен, вы можете проверить его состояние. Выполните следующую команду:
       sudo service docker status
-   Если демон Docker успешно запущен, вы должны увидеть сообщение, указывающее на то, что служба Docker запущена.
+    Если демон Docker успешно запущен, вы должны увидеть сообщение, указывающее на то, что служба Docker запущена.
  ## Протестируйте функциональность Docker:
-  После перезапуска демона Docker рекомендуется протестировать функциональность Docker, чтобы убедиться, что все работает должным образом. Вы можете сделать это, выполнив простую команду Docker, например:
+    После перезапуска демона Docker рекомендуется протестировать функциональность Docker, чтобы убедиться, что все работает должным образом. Вы можете сделать это, выполнив простую команду Docker, например:
     docker version
-  Если команда выполняется успешно и отображается информация о версии Docker, это означает, что Docker теперь функционирует должным образом.
+    Если команда выполняется успешно и отображается информация о версии Docker, это означает, что Docker теперь функционирует должным образом.
 
 # Первые действия с контейнерами
- ## Создание контейнера
+    Создание контейнера
         docker create -t -i eon01/infinite --name infinite
- ## Первый запуск контейнера
+    Первый запуск контейнера
         docker run -it --name infinite -d eon01/infinite
- ## Переименование контейнера
+    Переименование контейнера
         docker rename infinite infinity
- ## Удаление контейнера
+    Удаление контейнера
         docker rm infinite
- ## Обновление контейнера
+    Обновление контейнера
         docker update --cpu-shares 512 -m 300M infinite
- ##  Запуск и остановка контейнеров
-  ###  Запуск остановленного контейнера
-            docker start nginx
-        Остановка
-            docker stop nginx
-        Перезагрузка
-            docker restart nginx
-        Пауза (приостановка всех процессов контейнера)
-            docker pause nginx
-        Снятие паузы
-            docker unpause nginx
-        Блокировка (до остановки контейнера)
-            docker wait nginx
-        Отправка SIGKILL (завершающего сигнала)
-            docker kill nginx
-        Отправка другого сигнала
-            docker kill -s HUP nginx
+
+# Запуск и остановка контейнеров
+    Запуск остановленного контейнера
+        docker start nginx
+    Остановка
+        docker stop nginx
+    Перезагрузка
+        docker restart nginx
+    Пауза (приостановка всех процессов контейнера)
+        docker pause nginx
+    Снятие паузы
+        docker unpause nginx
+    Блокировка (до остановки контейнера)
+        docker wait nginx
+    Отправка SIGKILL (завершающего сигнала)
+        docker kill nginx
+    Отправка другого сигнала
+        docker kill -s HUP nginx
     Подключение к существующему контейнеру
         docker attach nginx
+
 # Получение информации о контейнерах
-        Работающие контейнеры
-            docker ps
-            docker ps -a
-        Логи контейнера
-            docker logs infinite
-        Информация о контейнере
-            docker inspect infinite
-            docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -q)
+    Работающие контейнеры
+        docker ps
+    Работающие и не работаюие контейнеры
+        docker ps -a 
+    Логи контейнера
+        docker logs infinite
+    Информация о контейнере
+        docker inspect infinite
+        docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -q)
     События контейнера
         docker events infinite
     Публичные порты
@@ -115,146 +117,144 @@
     Выполняющиеся процессы
         docker top infinite
 
-
 # Подключение к контейнеру
-  docker exec -ti NAME_OF_CONTAINER psql -U YOUR_POSTGRES_USERNAME
+    docker exec -ti NAME_OF_CONTAINER psql -U YOUR_POSTGRES_USERNAME
+      -i – интерактивный режим, не закрываем STDIN при старте.
+      -t – запуск псевдо-терменала.
     Важно:
-      docker exec запускает команду psql в запученом контейнере.
-      docker run запустит новый контейнер.
-
+          docker exec запускает команду psql в запущеном контейнере.
+          docker run запустит новый контейнер.
+    Узнать имя контейнера можно с помощью
+        docker ps -a 
+        ключ -a покажет нам все контейнеры, в том числе погашенные.
+    Посмотреть логи контейнера
+        docker logs {{ container name }}
 
 # Использование ресурсов
-
-   docker stats infinite
+    docker stats infinite
 
 # Изменения в файлах или директориях файловой системы контейнера
-
-docker diff infinite
+    docker diff infinite
 
 # Управление образами
-
     Список образов
-    docker images
+        docker images
     Создание образов
-    docker build .
-    docker build github.com/creack/docker-firefox
-    docker build - < Dockerfile
-    docker build - < context.tar.gz
-    docker build -t eon/infinite .
-    docker build -f myOtherDockerfile .
-    curl example.com/remote/Dockerfile | docker build -f - .
+        docker build .
+        docker build github.com/creack/docker-firefox
+        docker build - < Dockerfile
+        docker build - < context.tar.gz
+        docker build -t eon/infinite .
+        docker build -f myOtherDockerfile .
+        curl example.com/remote/Dockerfile | docker build -f - .
     Удаление образа
-    docker rmi nginx
+        docker rmi nginx
     Загрузка репозитория в tar (из файла или стандартного ввода)
-    docker load < ubuntu.tar.gz
-    docker load --input ubuntu.tar
+        docker load < ubuntu.tar.gz
+        docker load --input ubuntu.tar
     Сохранение образа в tar-архив
-    docker save busybox > ubuntu.tar
+        docker save busybox > ubuntu.tar
     Просмотр истории образа
-    docker history
+        docker history
     Создание образа из контейнера
-    docker commit nginx
+        docker commit nginx
     Тегирование образа
-    docker tag nginx eon01/nginx
+        docker tag nginx eon01/nginx
     Push (загрузка в реестр) образа
-    docker push eon01/nginx
+        docker push eon01/nginx
 
 # Сеть
- ## Создание сети
-        docker network create -d overlay MyOverlayNetwork
-        docker network create -d bridge MyBridgeNetwork
-        docker network create -d overlay \
-        --subnet=192.168.0.0/16 \
-        --subnet=192.170.0.0/16 \
-        --gateway=192.168.0.100 \
-        --gateway=192.170.0.100 \
-        --ip-range=192.168.1.0/24 \
-        --aux-address="my-router=192.168.1.5" --aux-address="my-switch=192.168.1.6" \
-        --aux-address="my-printer=192.170.1.5" --aux-address="my-nas=192.170.1.6" \
-        MyOverlayNetwork
- ## Удаление сети
-        docker network rm MyOverlayNetwork
- ## Список сетей
-        docker network ls
- ## Получение информации о сети
-        docker network inspect MyOverlayNetwork
- ## Подключение работающего контейнера к сети
-        docker network connect MyOverlayNetwork nginx
- ## Подключение контейнера к сети при его запуске
-        docker run -it -d --network=MyOverlayNetwork nginx
- ## Отключение контейнера от сети
-        docker network disconnect MyOverlayNetwork nginx
- ## Посмотреть в каких сетях подключен контейнер с1
-        docker inspect c1 -f "{{json .NetworkSettings.Networks }}"
- ## Посмотреть контейнеры в сети
-        docker network inspect MyOverlayNetwork -f "{{json .Containers }}"
-
+    Создание сети
+          docker network create -d overlay MyOverlayNetwork
+          docker network create -d bridge MyBridgeNetwork
+          docker network create -d overlay \
+          --subnet=192.168.0.0/16 \
+          --subnet=192.170.0.0/16 \
+          --gateway=192.168.0.100 \
+          --gateway=192.170.0.100 \
+          --ip-range=192.168.1.0/24 \
+          --aux-address="my-router=192.168.1.5" --aux-address="my-switch=192.168.1.6" \
+          --aux-address="my-printer=192.170.1.5" --aux-address="my-nas=192.170.1.6" \
+          MyOverlayNetwork
+    Удаление сети
+          docker network rm MyOverlayNetwork
+    Список сетей
+          docker network ls
+    Получение информации о сети
+          docker network inspect MyOverlayNetwork
+    Подключение работающего контейнера к сети
+          docker network connect MyOverlayNetwork nginx
+    Подключение контейнера к сети при его запуске
+          docker run -it -d --network=MyOverlayNetwork nginx
+    Отключение контейнера от сети
+          docker network disconnect MyOverlayNetwork nginx
+    Посмотреть в каких сетях подключен контейнер с1
+          docker inspect c1 -f "{{json .NetworkSettings.Networks }}"
+    Посмотреть контейнеры в сети
+          docker network inspect MyOverlayNetwork -f "{{json .Containers }}"
 
 # Очистка Docker
- ## Удаление работающего контейнера
-        docker rm nginx
- ## Удаление контейнера и его тома (volume)
-        docker rm -v nginx
- ## Удаление всех контейнеров со статусом exited
-        docker rm $(docker ps -a -f status=exited -q)
-
+    Удаление работающего контейнера
+          docker rm nginx
+    Удаление контейнера и его тома (volume)
+          docker rm -v nginx
+    Удаление всех контейнеров со статусом exited
+          docker rm $(docker ps -a -f status=exited -q)
     удаление всех остановленных контейнеров
-      docker container prune
-      docker rm `docker ps -a -q`
+        docker container prune
+        docker rm `docker ps -a -q`
     удаление контейнеров, остановленных более суток назад
-      docker container prune --filter "until=24h"
+        docker container prune --filter "until=24h"
     удаление образа
-      docker rmi nginx
+        docker rmi nginx
     удаление неиспользуемых (dangling) образов
-      docker image prune
-      docker rmi $(docker images -f dangling=true -q)
+        docker image prune
+        docker rmi $(docker images -f dangling=true -q)
     удаление неиспользуемых (dangling) образов даже с тегами
-      docker image prune -a
+        docker image prune -a
     удаление всех образов
-      docker rmi $(docker images -a -q)
+        docker rmi $(docker images -a -q)
     удаление всех образов без тегов
-      docker rmi -f $(docker images | grep "^<none>" | awk "{print $3}")
+        docker rmi -f $(docker images | grep "^<none>" | awk "{print $3}")
     остановка и удаление всех контейнеров
-      docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
+        docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
     удаление неиспользуемых (dangling) томов
-      docker volume prune
-      docker volume rm $(docker volume ls -f dangling=true -q)
+        docker volume prune
+        docker volume rm $(docker volume ls -f dangling=true -q)
     удаление неиспользуемых (dangling) томов по фильтру
-      docker volume prune --filter "label!=keep"
+        docker volume prune --filter "label!=keep"
     удаление неиспользуемых сетей
-      docker network prune
+        docker network prune
     удаление всех неиспользуемых объектов
-      docker system prune
-    о умолчанию для Docker 17.06.1+ тома не удаляются. Чтобы удалились и они тоже:
-      docker system prune --volumes
+        docker system prune
+    по умолчанию для Docker 17.06.1+ тома не удаляются. Чтобы удалились и они тоже:
+        docker system prune --volumes
     удалить лишние контейнеры, образы, сети и томы:
-      docker <system|container|image|volume|network> prune
+        docker <system|container|image|volume|network> prune
 
 # Docker Swarm
-
-Установка Docker Swarm
-    curl -ssl https://get.docker.com | bash
-    Прим. перев.: в Docker версий 1.12.0+ ничего дополнительно устанавливать не требуется, т.к. Docker Swarm встроен в Docker Engine в виде специального режима (Swarm mode).
-Инициализация Swarm
-  docker swarm init --advertise-addr 192.168.10.1
-Подключение рабочего узла (worker) к Swarm
-  docker swarm join-token worker
-Подключение управляющего узла (manager) к Swarm
-  docker swarm join-token manager
-Список сервисов
-  docker service ls
-Список узлов
-  docker node ls
-Создание сервиса
-  docker service create --name vote -p 8080:80 instavote/vote
-Список заданий Swarm
-  docker service ps
-Масштабирование сервиса
-  docker service scale vote=3
-Обновление сервиса
-  docker service update --image instavote/vote:movies vote
-  docker service update --force --update-parallelism 1 --update-delay 30s nginx
-  docker service update --update-parallelism 5--update-delay 2s --image instavote/vote:indent vote
-  docker service update --limit-cpu 2 nginx
-  docker service update --replicas=5 nginx
-
+    Установка Docker Swarm
+        curl -ssl https://get.docker.com | bash
+        Прим. перев.: в Docker версий 1.12.0+ ничего дополнительно устанавливать не требуется, т.к. Docker Swarm встроен в Docker Engine в виде специального режима (Swarm mode).
+    Инициализация Swarm
+        docker swarm init --advertise-addr 192.168.10.1
+    Подключение рабочего узла (worker) к Swarm
+        docker swarm join-token worker
+    Подключение управляющего узла (manager) к Swarm
+        docker swarm join-token manager
+    Список сервисов
+        docker service ls
+    Список узлов
+        docker node ls
+    Создание сервиса
+        docker service create --name vote -p 8080:80 instavote/vote
+    Список заданий Swarm
+        docker service ps
+    Масштабирование сервиса
+        docker service scale vote=3
+    Обновление сервиса
+        docker service update --image instavote/vote:movies vote
+        docker service update --force --update-parallelism 1 --update-delay 30s nginx
+        docker service update --update-parallelism 5--update-delay 2s --image instavote/vote:indent vote
+        docker service update --limit-cpu 2 nginx
+        docker service update --replicas=5 nginx
