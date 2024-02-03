@@ -84,9 +84,9 @@ yc config profile list
 
 ### YC профиль test
 PS C:\Users\dima-> yc config profile get test
-token: y0_AgAAAAAAfsvtAATuwQAAAADg4CBSpSYKIROsT5e2yrxwcO-Dlc-YaPw
-cloud-id: b1gl0du72dptm9e26vaq
-folder-id: b1ggmi2dmpt48jcfqocc
+token: 
+cloud-id: 
+folder-id: 
 compute-default-zone: ru-central1-b
 
 ### Реестр Docker
