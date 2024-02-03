@@ -122,8 +122,7 @@ pg_lsclusters
 sudo service postgresql stop
 sudo systemctl stop postgresql
 
-sudo pg_cluster main restart
-
+sudo pg_ctlcluster 15 main restart
 sudo pg_ctlcluster 15 main stop
 sudo pg_ctlcluster 15 main start
 
