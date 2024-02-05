@@ -91,7 +91,6 @@
 
 
  ## Альтернатиный вариант генерации блокировок с помощью утилиты pgbench и файла со скриптом
-# 10 минут c помощью утилиты pgbench подавайте нагрузку.
     
     Чтобы создать блокировки, можно использую таблицу accounts, созданную ранее. Делаю скрипт locks_script вкотором запросы к одним и тем же строкам таблицы из прошлого примера:
 
@@ -127,37 +126,31 @@
         BEGIN;
         UPDATE accounts SET amount = amount + 10 WHERE acc_no = 1;
 
-        Из сесии 4 смотрю блокирови, которые захватила транзакция №1
+        Из сесии 5 смотрю блокирови, которые захватила транзакция №1 (Т1):
         locks=# select * FROM pg_locks;
         locks=# SELECT locktype, relation::REGCLASS, tuple, virtualxid AS virtxid, transactionid AS xid, virtualtransaction, pid,   mode, granted, waitstart
+        FROM pg_locks WHERE pid = 4629;
 
             FROM pg_locks;
    locktype    |   relation    | tuple | virtxid |   xid   | virtualtransaction | pid  |       mode       | granted | waitstart
 ---------------+---------------+-------+---------+---------+--------------------+------+------------------+---------+-----------
- relation      | pg_locks      |       |         |         | 6/28               | 4692 | AccessShareLock  | t       |
- virtualxid    |               |       | 6/28    |         | 6/28               | 4692 | ExclusiveLock    | t       |
  relation      | accounts_pkey |       |         |         | 3/2504             | 4629 | RowExclusiveLock | t       |
  relation      | accounts      |       |         |         | 3/2504             | 4629 | RowExclusiveLock | t       |
  virtualxid    |               |       | 3/2504  |         | 3/2504             | 4629 | ExclusiveLock    | t       |
  transactionid |               |       |         | 5536451 | 3/2504             | 4629 | ExclusiveLock    | t       |
 
-        Транзакция №1 захватила блокировки:
-      
-            Тип virtualxid, режим ExclusiveLock - эксклюзивная блокировка транзакцией своего виртуального номера транзакции
+        Описание блокировок транзакции Т1:
+            Тип virtualxid, режим ExclusiveLock - эксклюзивная блокировка транзакцией своего виртуального номера транзакции (3/2504).
             Тип transactionid, режим ExclusiveLock - это блокировка транзакцией номера транзакции (5536451).
-            Тип reltion, режим RowExclusiveLock, таблица accounts - это команда UPDATE получила блокировку, чтобы работать с таблицей accounts. 
-            Тип reltion, режим RowExclusiveLock, индекс accounts_pkey - это команда UPDATE получила блокировку, чтобы работать с индексом accounts_pkey.
-            Тип 
-        
-
-
+            Тип relation, режим RowExclusiveLock, таблица accounts - это команда UPDATE получила блокировку, чтобы работать с таблицей accounts. 
+            Тип relation, режим RowExclusiveLock, индекс accounts_pkey - это команда UPDATE получила блокировку, чтобы работать с индексом accounts_pkey.
 
     Сессия 2
         sudo -u postgres psql -p5432 -d locks
         BEGIN;
         UPDATE accounts SET amount = amount + 100 WHERE acc_no = 1;
 
-        Проверяем блокировки
+        Из сесии 5 смотрю блокирови, которые захватила транзакция Т2
         locks=# SELECT locktype, relation::REGCLASS, tuple, virtualxid AS virtxid, transactionid AS xid, virtualtransaction, pid,   mode, granted, waitstart
         FROM pg_locks WHERE pid = 4633;
 
@@ -171,17 +164,18 @@
  tuple         | accounts      |     1 |         |         | 4/2                | 4633 | ExclusiveLock    | t       |
 (6 rows)
 
-
-        На версии строки (tuple) таблицы accounts это блокировка строки
-
-
+        Описание блокировок транзакции Т2:
+            Т2 получила блокировки таблицы и индекса в режиме RowExclusiveLock
+            Т2 также получила блокировку виртуального номера транзации virtualxid в режиме ExclusiveLock
+            Т2 получила блокировку своего номера транзакции 5536451 в режиме ExclusiveLock
+            Т2 захватила блокировку версии строки tuple в режиме ExclusiveLock, но была вынуждена запросить блокировку номера (transactionid) первой транзакции 5536451 и на этом повисла.
+    
     Сессия 3
-        
-        
         sudo -u postgres psql -p5432 -d locks
         BEGIN;
         UPDATE accounts SET amount = amount + 1000 WHERE acc_no = 1;
 
+        Из сесии 5 смотрю блокирови, которые захватила транзакция №3 (Т3):
 locks=# SELECT locktype, relation::REGCLASS, tuple, virtualxid AS virtxid, transactionid AS xid, virtualtransaction, pid,   mode, granted, waitstart
         FROM pg_locks WHERE pid = 4692;
    locktype    |   relation    | tuple | virtxid |   xid   | virtualtransaction | pid  |       mode       | granted |           waitstart
@@ -193,16 +187,18 @@ locks=# SELECT locktype, relation::REGCLASS, tuple, virtualxid AS virtxid, trans
  transactionid |               |       |         | 5536453 | 6/33               | 4692 | ExclusiveLock    | t       |
 (5 rows)
 
-
+        Описание блокировок транзакции Т3:
+            Т3 получила блокировки таблицы и индекса в режиме RowExclusiveLock
+            Т3 также получила блокировку виртуального номера транзации 6/33 virtualxid в режиме ExclusiveLock
+            Т3 получила блокировку своего номера транзакции 5536453 в режиме ExclusiveLock
+            Т3 попыталась захватить блокировку версии строки tuple в режиме ExclusiveLock и повисла же на этом щаге.
 
     Сессия 4
+         SELECT locktype, relation::REGCLASS, tuple, virtualxid AS virtxid, transactionid AS xid, virtualtransaction, pid,   mode, granted, waitstart
+         FROM pg_locks WHERE pid = 4697;
      
-
-     SELECT locktype, relation::REGCLASS, tuple, virtualxid AS virtxid, transactionid AS xid, virtualtransaction, pid,   mode, granted, waitstart
-        FROM pg_locks WHERE pid = 4697;
-     
-     
-     ocks=# SELECT locktype, relation::REGCLASS, tuple, virtualxid AS virtxid, transactionid AS xid, virtualtransaction, pid,   mode, granted, waitstart
+     Из сесии 5 смотрю блокирови, которые захватила транзакция №3 (Т4):
+     locks=# SELECT locktype, relation::REGCLASS, tuple, virtualxid AS virtxid, transactionid AS xid, virtualtransaction, pid,   mode, granted, waitstart
 
         FROM pg_locks WHERE pid = 6597;
    locktype    |   relation    | tuple | virtxid |   xid   | virtualtransaction | pid  |       mode       | granted |          waitstart
@@ -214,51 +210,143 @@ locks=# SELECT locktype, relation::REGCLASS, tuple, virtualxid AS virtxid, trans
  tuple         | accounts      |     1 |         |         | 7/1218             | 6597 | ExclusiveLock    | f       | 2024-02-03 20:27:25.01356+00
 (5 rows)
      
-     
+     Описание блокировок транзакции Т4:
+            Т4 получила блокировки таблицы и индекса в режиме RowExclusiveLock
+            Т4 также получила блокировку виртуального номера транзации 7/1218 virtualxid в режиме ExclusiveLock
+            Т4 получила блокировку своего номера транзакции 5536453 в режиме ExclusiveLock
+            Т4 попыталась захватить блокировку версии строки tuple в режиме ExclusiveLock и повисла же на этом щаге.
      
      Сессия 5
           
-     
-        Смотрю логи
-        sudo tail -n 10 /var/log/postgresql/postgresql-15-main.log
-
-            2024-02-03 12:07:09.599 UTC [1739] postgres@locks LOG:  process 1739 still waiting for ShareLock on transaction 5536448 after 200.056 ms
-            2024-02-03 12:07:09.599 UTC [1739] postgres@locks DETAIL:  Process holding the lock: 1680. Wait queue: 1739.
-            2024-02-03 12:07:09.599 UTC [1739] postgres@locks CONTEXT:  while updating tuple (0,1) in relation "accounts"
-            2024-02-03 12:07:09.599 UTC [1739] postgres@locks STATEMENT:  UPDATE accounts SET amount = amount + 100 WHERE acc_no = 1;
-            2024-02-03 12:07:25.081 UTC [1737] postgres@locks LOG:  process 1737 still waiting for ExclusiveLock on tuple (0,1) of relation 22849 of database 22833 after 200.059 ms
-            2024-02-03 12:07:25.081 UTC [1737] postgres@locks DETAIL:  Process holding the lock: 1739. Wait queue: 1737.
-            2024-02-03 12:07:25.081 UTC [1737] postgres@locks STATEMENT:  UPDATE accounts SET amount = amount + 1000 WHERE acc_no = 1;
-
-
         Запрос блокировок
 
-locks=# SELECT pid, wait_event_type, wait_event, pg_blocking_pids(pid)
-FROM pg_stat_activity
-WHERE backend_type = 'client backend';
- pid  | wait_event_type |  wait_event   | pg_blocking_pids
-------+-----------------+---------------+------------------
- 4629 | Client          | ClientRead    | {}
- 4633 | Lock            | transactionid | {4629}
- 4639 |                 |               | {}
- 4692 | Lock            | tuple         | {4633}
- 6597 | Lock            | tuple         | {4633,4692}
+            locks=# SELECT pid, wait_event_type, wait_event, pg_blocking_pids(pid)
+            FROM pg_stat_activity
+            WHERE backend_type = 'client backend';
+            pid  | wait_event_type |  wait_event   | pg_blocking_pids
+            ------+-----------------+---------------+------------------
+            4629 | Client          | ClientRead    | {}
+            4633 | Lock            | transactionid | {4629}
+            4639 |                 |               | {}
+            4692 | Lock            | tuple         | {4633}
+            6597 | Lock            | tuple         | {4633,4692}
 
-
-Получается своеобразная «очередь», в которой есть первый (тот, кто удерживает блокировку версии строки) и все остальные, выстроившиеся за первым.
-
-
-locks=# SELECT * FROM pg_stat_activity WHERE pid = ANY(pg_blocking_pids(1737)) \gx
-
-
-
+Получается своеобразная «очередь», в которой есть первый (тот, кто удерживает блокировку версии строки) это транзация  Т2 (4633) и остальные, выстроившиеся за первым (транзакции Т3 4692, Т4 6597).
 
 # Воспроизведите взаимоблокировку трех транзакций. Можно ли разобраться в ситуации постфактум, изучая журнал сообщений?
 
+    Сценарий взаимоблокировки трех транзакций через консоль:
+        Транзакция 1    Пополнение счета 1
+        Транзакция 2    Пополнение счета 2 
+        Транзакция 3    Пополнение счета 3
+        Транзакция 1    Пополнение счета 3 - блокировка транзакцией 3
+        Транзакция 2    Пополнение счета 1 - блокировка транзакцией 1
+        Транзакция 3    Пополнение счета 2 - взаимная блокировка
+
+    Сессия 1 (process 1637)
+        locks=# begin;
+        BEGIN
+        locks=*# UPDATE accounts SET amount = amount + 10 WHERE acc_no = 1;
+        UPDATE 1
+    Сессия 2 (process 1646)
+        locks=# begin;
+        BEGIN
+        locks=*# UPDATE accounts SET amount = amount + 100 WHERE acc_no = 2;
+        UPDATE 1
+    Сессия 3 (process 1654)
+        locks=# begin;
+        BEGIN
+        locks=*# UPDATE accounts SET amount = amount + 1000 WHERE acc_no = 3;
+        UPDATE 1
+    Сессия 1 (process 1637)
+        locks=*# UPDATE accounts SET amount = amount + 1001 WHERE acc_no = 3;
+        UPDATE 1
+        locks=*#
+    Сессия 2 (process 1646)
+        locks=*# UPDATE accounts SET amount = amount + 11 WHERE acc_no = 1;
+        Зависла
+    Сессия 3 (process 1654)
+        locks=*# UPDATE accounts SET amount = amount + 101 WHERE acc_no = 2;
+        ERROR:  deadlock detected
+        DETAIL:  Process 1654 waits for ShareLock on transaction 5536467; blocked by process 1646.
+        Process 1646 waits for ShareLock on transaction 5536465; blocked by process 1637.
+        Process 1637 waits for ShareLock on transaction 5536468; blocked by process 1654.
+        HINT:  See server log for query details.
+        CONTEXT:  while updating tuple (0,2) in relation "accounts"
+        locks=!#
+
+    Сессия 1
+        locks=*# commit;
+        COMMIT
+        locks=#
+
+
+    Запрос логов
+        sudo tail -n 40 /var/log/postgresql/postgresql-15-main.log
+            2024-02-05 18:23:41.849 UTC [1646] postgres@locks LOG:  process 1646 still waiting for ShareLock on transaction 5536465 after 200.057 ms
+            2024-02-05 18:23:41.849 UTC [1646] postgres@locks DETAIL:  Process holding the lock: 1637. Wait queue: 1646.
+            2024-02-05 18:23:41.849 UTC [1646] postgres@locks CONTEXT:  while updating tuple (0,32) in relation "accounts"
+            2024-02-05 18:23:41.849 UTC [1646] postgres@locks STATEMENT:  UPDATE accounts SET amount = amount + 100 WHERE acc_no = 1;
+            2024-02-05 18:24:00.342 UTC [1646] postgres@locks ERROR:  canceling statement due to user request
+            2024-02-05 18:24:00.342 UTC [1646] postgres@locks CONTEXT:  while updating tuple (0,32) in relation "accounts"
+            2024-02-05 18:24:00.342 UTC [1646] postgres@locks STATEMENT:  UPDATE accounts SET amount = amount + 100 WHERE acc_no = 1;
+            2024-02-05 18:24:11.231 UTC [923] LOG:  checkpoint starting: time
+            2024-02-05 18:24:11.252 UTC [923] LOG:  checkpoint complete: wrote 1 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.003 s, total=0.021 s; sync files=1, longest=0.003 s, average=0.003 s; distance=0 kB, estimate=1 kB
+            2024-02-05 18:25:11.303 UTC [923] LOG:  checkpoint starting: time
+            2024-02-05 18:25:11.420 UTC [923] LOG:  checkpoint complete: wrote 1 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.106 s, sync=0.004 s, total=0.118 s; sync files=1, longest=0.004 s, average=0.004 s; distance=1 kB, estimate=1 kB
+            2024-02-05 18:25:41.450 UTC [923] LOG:  checkpoint starting: time
+            2024-02-05 18:25:41.568 UTC [923] LOG:  checkpoint complete: wrote 1 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.105 s, sync=0.006 s, total=0.118 s; sync files=1, longest=0.006 s, average=0.006 s; distance=1 kB, estimate=1 kB
+            2024-02-05 18:26:13.743 UTC [1637] postgres@locks LOG:  process 1637 still waiting for ShareLock on transaction 5536468 after 200.145 ms
+            2024-02-05 18:26:13.743 UTC [1637] postgres@locks DETAIL:  Process holding the lock: 1654. Wait queue: 1637.
+            2024-02-05 18:26:13.743 UTC [1637] postgres@locks CONTEXT:  while updating tuple (0,3) in relation "accounts"
+            2024-02-05 18:26:13.743 UTC [1637] postgres@locks STATEMENT:  UPDATE accounts SET amount = amount + 1001 WHERE acc_no = 3;
+            2024-02-05 18:26:43.003 UTC [1646] postgres@locks LOG:  process 1646 still waiting for ShareLock on transaction 5536465 after 200.142 ms
+            2024-02-05 18:26:43.003 UTC [1646] postgres@locks DETAIL:  Process holding the lock: 1637. Wait queue: 1646.
+            2024-02-05 18:26:43.003 UTC [1646] postgres@locks CONTEXT:  while updating tuple (0,32) in relation "accounts"
+            2024-02-05 18:26:43.003 UTC [1646] postgres@locks STATEMENT:  UPDATE accounts SET amount = amount + 11 WHERE acc_no = 1;
+            2024-02-05 18:26:56.758 UTC [1654] postgres@locks LOG:  process 1654 detected deadlock while waiting for ShareLock on transaction 5536467 after 200.077 ms
+            2024-02-05 18:26:56.758 UTC [1654] postgres@locks DETAIL:  Process holding the lock: 1646. Wait queue: .
+            2024-02-05 18:26:56.758 UTC [1654] postgres@locks CONTEXT:  while updating tuple (0,2) in relation "accounts"
+            2024-02-05 18:26:56.758 UTC [1654] postgres@locks STATEMENT:  UPDATE accounts SET amount = amount + 101 WHERE acc_no = 2;
+            2024-02-05 18:26:56.758 UTC [1654] postgres@locks ERROR:  deadlock detected
+            2024-02-05 18:26:56.758 UTC [1654] postgres@locks DETAIL:  Process 1654 waits for ShareLock on transaction 5536467; blocked by process 1646.
+                    Process 1646 waits for ShareLock on transaction 5536465; blocked by process 1637.
+                    Process 1637 waits for ShareLock on transaction 5536468; blocked by process 1654.
+                    Process 1654: UPDATE accounts SET amount = amount + 101 WHERE acc_no = 2;
+                    Process 1646: UPDATE accounts SET amount = amount + 11 WHERE acc_no = 1;
+                    Process 1637: UPDATE accounts SET amount = amount + 1001 WHERE acc_no = 3;
+            2024-02-05 18:26:56.758 UTC [1654] postgres@locks HINT:  See server log for query details.
+            2024-02-05 18:26:56.758 UTC [1654] postgres@locks CONTEXT:  while updating tuple (0,2) in relation "accounts"
+            2024-02-05 18:26:56.758 UTC [1654] postgres@locks STATEMENT:  UPDATE accounts SET amount = amount + 101 WHERE acc_no = 2;
+            2024-02-05 18:26:56.759 UTC [1637] postgres@locks LOG:  process 1637 acquired ShareLock on transaction 5536468 after 43216.058 ms
+            2024-02-05 18:26:56.759 UTC [1637] postgres@locks CONTEXT:  while updating tuple (0,3) in relation "accounts"
+            2024-02-05 18:26:56.759 UTC [1637] postgres@locks STATEMENT:  UPDATE accounts SET amount = amount + 1001 WHERE acc_no = 3;
+            2024-02-05 19:35:18.544 UTC [1646] postgres@locks LOG:  process 1646 acquired ShareLock on transaction 5536465 after 4115741.361 ms
+            2024-02-05 19:35:18.544 UTC [1646] postgres@locks CONTEXT:  while updating tuple (0,32) in relation "accounts"
+            2024-02-05 19:35:18.544 UTC [1646] postgres@locks STATEMENT:  UPDATE accounts SET amount = amount + 11 WHERE acc_no = 1;
+            
+
+        По логу видно что в ходе выполнения транзакции 3 (процесс 1654) был дедлок из-за того что
+            Транзакция 1 (процесс 1637) была заблокирован транзакцией 3 (процесс 1654)
+                Process 1637 waits for ShareLock on transaction 5536468; blocked by process 1654.
+            Транзакция 2 (процесс 1646) была заблокирована транзакцией 1 (процесс 1637)
+                Process 1646 waits for ShareLock on transaction 5536465; blocked by process 1637.
+            Транзакция 3 (процесс 1654) была заблокирована транзакцией 2 (процесс 1646)
+                Process 1654 waits for ShareLock on transaction 5536467; blocked by process 1646.
+        
+        Также видно что после дедлока 
+            Процессу 1637 удалось получить блокировку. Значит был снят процесс 1654. Он откатился.
+                process 1637 acquired ShareLock on transaction 5536468 after 43216.058 ms
+            Процессу 1646 удалось получить блокировку. Завершился процесс 1637
+                rocess 1646 acquired ShareLock on transaction 5536465 after 4115741.361 ms
+
 # Могут ли две транзакции, выполняющие единственную команду UPDATE одной и той же таблицы (без where), заблокировать друг друга?
 
+Теоретически это возможно если одна команда будет обновлять строки таблицы в прямом порядке, а другая в обратном.
+
+
 # Задание со звездочкой*
-  Попробуйте воспроизвести такую ситуацию.
+  Воспроизвести не получилоь.
 
 Критерии оценки:
 Выполнение ДЗ: 10 баллов
