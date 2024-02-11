@@ -16,6 +16,7 @@
 [Создание base image для docker в Unix/Linux](http://linux-notes.org/sozdanie-base-image-dlya-docker-v-unix-linux/)
 [Создание docker контейнера в Unix/Linux](http://linux-notes.org/sozdanie-docker-kontejnera-v-unix-linux/)
 [Остановить/Удалить все Docker контейнеры/images](http://linux-notes.org/ustanovka-docker-na-debian-ubuntu/)
+[Docker-compose в действии: от базовой сборки до оптимизации приложений](https://www.yourtodo.ru/posts/docker-compose-v-dejstvii-ot-bazovoj-sborki-do-optimizatsii-prilozhenij/)
 
 # Процессы изменения статусов контейнера Docker
 ![Процессы изменения статусов контейнера Docker](docer_container_statuses_processing.png)

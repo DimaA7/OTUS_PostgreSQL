@@ -1,8 +1,9 @@
 # Материалы:
 
 [Learn SQL and Database by Examples](https://www.sqliz.com/)
-
 [PostgreSQL 16.0 [Русский]](https://runebook.dev/ru/docs/postgresql/-index-)
+[habr.com Статьи по PostgreSQL](https://habr.com/ru/hubs/postgresql/articles/)
+[www.youtube.com Postgres Professional](https://www.youtube.com/@PostgresProfessional)
 
 # Запустить виртуальную машину:
 

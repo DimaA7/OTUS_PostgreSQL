@@ -1,4 +1,3 @@
-
 Документация: https://patroni.readthedocs.io/en/latest/index.html
 Репозиторий: https://github.com/zalando/patroni
 Выступление на конференции: https://www.youtube.com/watch?v=lMPYerAYEVs&t=8109s
@@ -6,36 +5,29 @@
 # Материалы
  ## Разработчики: Александр Кукушкин, Алексей Клюкин (Zalando SE)
   [Документация:](https://patroni.readthedocs.io/en/latest/index.html)
-
   [Репозиторий:](https://github.com/zalando/patroni)
-
   [Выступление на конференции:](https://www.youtube.com/watch?v=lMPYerAYEVs&t=8109s)
 
  # Patroni
   [lalbrekht/otus-patroni Patroni cluster demo stand](https://github.com/lalbrekht/otus-patroni)
-
   [zalando/patroni - Template for PostgreSQL HA with ZooKeeper, etcd or Consul](https://github.com/zalando/patroni/blob/master/README.rst)
-
+  [zalando/spilo](https://github.com/zalando/spilo)
+  [zalando/postgres-operator](https://github.com/zalando/postgres-operator/blob/master/README.md)
   [Как мы построили надёжный кластер PostgreSQL на Patroni](https://habr.com/ru/companies/vk/articles/452846/)
-
   [Управление высокодоступными PostgreSQL кластерами с помощью Patroni | А.Клюкин, А.Кукушкин](https://www.youtube.com/watch?v=lMPYerAYEVs)
-  
-  [Set Up a Highly Available PostgreSQL Cluster using Docker on Ubuntu 20.04](https://www.techsupportpk.com/2022/02/set-up-highly-available-postgresql-cluster-docker-ubuntu.html)
-
+  [Set Up a Highly Available PostgreSQL Cluster using Docker on Ubuntu 20.04](https://www.stepstoperform.com/2022/12/pg12-cluster-docker-ubuntu.html)
   [Set Up a Highly Available PostgreSQL 11 Cluster on Ubuntu 20.04](https://www.techsupportpk.com/2020/02/how-to-set-up-highly-available-postgresql-cluster-ubuntu-19-20.html)
-
   [Patroni + Consul](https://gitlab.com/otus_linux/patroni)
+  [Patroni + Zookeeper]
+  
+  [High availability and Disaster recovery with Docker and Postgres part I](https://blog.seocahill.com/docker-postgres-cluster-with-high-availability-and-disaster-recovery/)
+  [ha-postgres-docker-stack github.com](https://github.com/seocahill/ha-postgres-docker-stack)
 
-  [Patroni + Zookeeper](https://temofeev.ru/info/articles/zaryazhay-patroni-testiruem-patronizookeeper-klaster-chast-pervaya/)
-
+  
   [Etcd](https://github.com/coreos/etcd)
-
   [Пример установки и запуска patroni в среде Docker Swarm. Предполагается, что установка выполняется на пустой машине с OS Debian 10.](https://github.com/tsvetkov-vladimir/docker-patroni)
-
   [Patroni cluster (with Zookeeper) in a docker swarm on a local machine](https://habr.com/ru/articles/527370/)
-
   [Patroni 3.0 & Citus: Scalable, Highly Available Postgres](https://www.citusdata.com/blog/2023/03/06/patroni-3-0-and-citus-scalable-ha-postgres/)
-
   
 # High availability – высокая доступность
     Распределенное хранилище
