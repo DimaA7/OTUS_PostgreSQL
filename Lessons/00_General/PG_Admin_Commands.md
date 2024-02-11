@@ -1,8 +1,9 @@
 # Материалы:
 
 [Learn SQL and Database by Examples](https://www.sqliz.com/)
-
 [PostgreSQL 16.0 [Русский]](https://runebook.dev/ru/docs/postgresql/-index-)
+[habr.com Статьи по PostgreSQL](https://habr.com/ru/hubs/postgresql/articles/)
+[www.youtube.com Postgres Professional](https://www.youtube.com/@PostgresProfessional)
 
 # Запустить виртуальную машину:
 
@@ -84,9 +85,9 @@ yc config profile list
 
 ### YC профиль test
 PS C:\Users\dima-> yc config profile get test
-token: y0_AgAAAAAAfsvtAATuwQAAAADg4CBSpSYKIROsT5e2yrxwcO-Dlc-YaPw
-cloud-id: b1gl0du72dptm9e26vaq
-folder-id: b1ggmi2dmpt48jcfqocc
+token: 
+cloud-id: 
+folder-id: 
 compute-default-zone: ru-central1-b
 
 ### Реестр Docker
@@ -122,8 +123,7 @@ pg_lsclusters
 sudo service postgresql stop
 sudo systemctl stop postgresql
 
-sudo pg_cluster main restart
-
+sudo pg_ctlcluster 15 main restart
 sudo pg_ctlcluster 15 main stop
 sudo pg_ctlcluster 15 main start
 
