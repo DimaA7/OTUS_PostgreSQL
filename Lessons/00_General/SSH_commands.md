@@ -5,7 +5,7 @@
 [Настройка SSH аутентификации по ключам в Windows](https://winitpro.ru/index.php/2019/11/13/autentifikaciya-po-ssh-klyucham-v-windows/)
 [Setting the default ssh key location](https://stackoverflow.com/questions/84096/setting-the-default-ssh-key-location)
 [Key-based authentication in OpenSSH for Windows](https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement)
-[Yandex Cloud. Добавление SSH-ключей для других пользователейДобавление SSH-ключей для других пользователей](https://cloud.yandex.ru/ru/docs/compute/operations/vm-connect/ssh#vm-authorized-keys)
+[Yandex Cloud. Добавление SSH-ключей для других пользователей](https://cloud.yandex.ru/ru/docs/compute/operations/vm-connect/ssh#vm-authorized-keys)
 
 ## Создать SSH ключ
 

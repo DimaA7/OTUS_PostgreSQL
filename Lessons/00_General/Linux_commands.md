@@ -156,3 +156,7 @@
             git is already the newest version (1:2.34.1-1ubuntu1.10).
             git set to manually installed.
             0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.
+
+
+# Работа с сетью
+  $ netstat -plutn
