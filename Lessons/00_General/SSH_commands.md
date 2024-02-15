@@ -6,6 +6,11 @@
 [Setting the default ssh key location](https://stackoverflow.com/questions/84096/setting-the-default-ssh-key-location)
 [Key-based authentication in OpenSSH for Windows](https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement)
 [Yandex Cloud. Добавление SSH-ключей для других пользователей](https://cloud.yandex.ru/ru/docs/compute/operations/vm-connect/ssh#vm-authorized-keys)
+[Использование встроенного SSH клиента в Windows 10](https://winitpro.ru/index.php/2020/01/22/vstroennyj-ssh-klient-windows/)
+[Памятка пользователям ssh](https://habr.com/ru/articles/122445/)
+[Магия SSH](https://habr.com/ru/articles/331348/)
+[SSH ТУННЕЛЬ ► Линуксовые Фишечки #19](https://www.youtube.com/watch?v=pxXbj9dZMAM&t=511s)
+[SSH Туннели на практике](https://www.youtube.com/watch?v=GBx3KEcuKFA)
 
 ## Создать SSH ключ
 
@@ -66,3 +71,30 @@ Are you sure you want to continue connecting (yes/no)?
 nano ~/.ssh/authorized_keys
 Вставьте с новой строки скопированный ключ и сохраните изменения комбинацией клавиш Ctrl + O. Закройте файл комбинацией Ctrl + X.
 Не отключаясь от ВМ, проверьте возможность подключения с добавленным ключом в другом окне Терминала.
+
+
+# SSH туннели
+  [Магия SSH](https://habr.com/ru/articles/331348/)
+
+    Отображение всех подключений и портов прослушивания
+        $ netstat -plutn
+
+        Активные подключения
+            netstat -a
+            Имя    Локальный адрес        Внешний адрес          Состояние
+            TCP    0.0.0.0:135            activation:0           LISTENING
+
+        $sudo lsof -i -s -n -P
+
+
+Опция -L позволяет локальные обращения (Local) направлять на удалённый сервер.
+Опция -R позволяет перенаправлять с удалённого (Remote) сервера порт на свой (локальный).
+ Опция ssh -A пробрасывает авторизацию на удалённый сервер.
+
+
+
+ Пиг порта через PowerShell
+    > Test-NetConnection 51.250.6.192 -p 5438
+
+ Проброс порта
+    ssh  -L 9000:localhost:9000 dima@51.250.6.192
