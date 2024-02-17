@@ -1,4 +1,4 @@
-[https://www.citusdata.com/blog/2023/03/06/patroni-3-0-and-citus-scalable-ha-postgres/#patroni](https://www.citusdata.com/blog/2023/03/06/patroni-3-0-and-citus-scalable-ha-postgres/#patroni)
+[Patroni 3.0 & Citus: Scalable, Highly Available Postgres](https://www.citusdata.com/blog/2023/03/06/patroni-3-0-and-citus-scalable-ha-postgres/#patroni)
 [adavarski/docker-postgresql-ha-patroni-consul-zookeeper](https://github.com/adavarski/docker-postgresql-ha-patroni-consul-zookeeper/tree/main)
 [zalando/patroni](https://github.com/zalando/patroni/blob/master/Dockerfile.citus)
 [Patroni: A Template for PostgreSQL HA with ZooKeeper, etcd or Consul](https://github.com/UKHomeOffice/docker-postgres-patroni-not-tracking/blob/master/patroni/README.rst)
