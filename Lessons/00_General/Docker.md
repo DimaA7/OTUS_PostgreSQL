@@ -107,10 +107,8 @@
         docker start $(docker ps -a -q)
         docker stop $(docker ps -a -q)
         docker restart $(docker ps -a -q)
-        В docker ps команде перечислены все запущенные контейнеры, а -q опция вернет только идентификатор контейнера. Это передается в docker stop команду для остановки каждого контейнера.
+        В docker ps команде перечислены все запущенные контейнеры, а -q опция вернет только идентификатор контейнера. Это передается в docker команду для остановки каждого контейнера.
     
-docker kill
-
 # Получение информации о контейнерах
     Работающие контейнеры
         docker ps
@@ -238,8 +236,11 @@ docker kill
     удаление всех остановленных контейнеров
         docker container prune
         docker rm `docker ps -a -q`
+    Если необходимо удалить работающий контейнер, можно использовать опцию -f (force):
+        docker rm -f [имя_контейнера или ID]
     удаление контейнеров, остановленных более суток назад
         docker container prune --filter "until=24h"
+
     удаление образа
         docker rmi nginx
     удаление неиспользуемых (dangling) образов
@@ -253,6 +254,7 @@ docker kill
         docker rmi -f $(docker images | grep "^<none>" | awk "{print $3}")
     остановка и удаление всех контейнеров
         docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
+    
     удаление неиспользуемых (dangling) томов
         docker volume prune
         docker volume rm $(docker volume ls -f dangling=true -q)
