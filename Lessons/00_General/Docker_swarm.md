@@ -1,8 +1,9 @@
 [Docker Swarm для самых маленьких](https://habr.com/ru/articles/659813/)
 [swarm-exec/README.md. A simple tool to execute a docker command in all the swarm nodes](https://github.com/mavenugo/swarm-exec/blob/master/README.md)
 [Doсker Swarm: деплой и управление окружением на практике (полный курс)](https://www.youtube.com/watch?v=GgkreJfdTL8)
+[Docker машина, Swarm и Compose для мульти-контейнеров и приложений мульти-хост с CouchBase и Wildfly ...](https://russianblogs.com/article/94712166295/)
 
-Помсмотреть ключ для подключения ноды
+Посмотреть ключ для подключения ноды
 $ docker swarm join-token worker
 
 docker swarm join --token
