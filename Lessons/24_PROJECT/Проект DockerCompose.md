@@ -125,3 +125,22 @@ postgres@haproxy:~$ patronictl switchover
 TRUNCATE TABLE
 
 https://app.diagrams.net/#G1q7p86UrdyCVclpDKvGH00LGZ8CwGWhnf#%7B%22pageId%22%3A%22q9_abYsVsID2bkDwJTH_%22%7D
+
+
+$ docker exec -ti demo-work1-1 bash
+postgres@work1-1:~$ patronictl list
++ Citus cluster: demo ----------+--------------+-----------+----+-----------+
+| Group | Member  | Host        | Role         | State     | TL | Lag in MB |
++-------+---------+-------------+--------------+-----------+----+-----------+
+|     0 | coord1  | 172.21.0.4  | Leader       | running   |  2 |           |
+|     0 | coord2  | 172.21.0.10 | Sync Standby | streaming |  2 |         0 |
+|     0 | coord3  | 172.21.0.3  | Replica      | streaming |  2 |         0 |
+|     1 | work1-1 | 172.21.0.5  | Leader       | running   |  2 |           |
+|     2 | work2-2 | 172.21.0.7  | Replica      | running   |  3 |         0 |
++-------+---------+-------------+--------------+-----------+----+-----------+
+
+
+postgres@work1-1:~$ etcdctl member list
+1bab629f01fa9065, started, etcd3, http://etcd3:2380, http://172.21.0.2:2379
+8ecb6af518d241cc, started, etcd2, http://etcd2:2380, http://172.21.0.9:2379
+b2e169fcb8a34028, started, etcd1, http://etcd1:2380, http://172.21.0.12:2379
