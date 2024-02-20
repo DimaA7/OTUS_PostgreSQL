@@ -121,7 +121,11 @@ pg_lsclusters
 # Запустить/ остановить кластер PG:
 [Stopping a postgresql instance](https://askubuntu.com/questions/642259/stopping-a-postgresql-instance)
 sudo service postgresql stop
+аналогично
 sudo systemctl stop postgresql
+
+sudo service postgresql start
+
 
 sudo pg_ctlcluster 15 main restart
 sudo pg_ctlcluster 15 main stop
