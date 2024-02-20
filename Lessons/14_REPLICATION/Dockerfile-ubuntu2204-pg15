@@ -1,0 +1,46 @@
+FROM ubuntu:22.04
+
+RUN    ln -snf /usr/share/zoneinfo/UTC /etc/localtime && echo UTC > /etc/timezone
+RUN    apt update 
+RUN    apt dist-upgrade -y
+RUN    apt install lsb-release -y
+RUN    apt install iputils-ping -y
+RUN    apt install vim -y
+RUN    apt install netcat -y
+RUN    apt install nano -y
+RUN    apt install mc -y
+RUN    apt install gnupg2 -y
+RUN    apt install wget -y
+
+    # postgresql postgresql-contrib
+
+RUN     DEBIAN_FRONTEND=noninteractive apt upgrade -y -q
+RUN     sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+RUN     wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+RUN     apt update
+RUN     DEBIAN_FRONTEND=noninteractive apt install postgresql-15 postgresql-client -y
+
+RUN    service postgresql start
+
+RUN    echo "listen_addresses = '*'" >> /etc/postgresql/15/main/postgresql.conf
+RUN    echo "wal_log_hints = on" >> /etc/postgresql/15/main/postgresql.conf
+RUN    echo "archive_mode = on" >>  /etc/postgresql/15/main/postgresql.conf
+RUN    echo "archive_command = 'test ! -f /archive/%f && cp %p /archive/%f'" >>  /etc/postgresql/15/main/postgresql.conf
+
+    # echo "archive_cleanup_command = 'pg_archivecleanup /archive %r'" >>  /etc/postgresql/15/main/postgresql.conf
+    # echo "restore_command = 'cp /archive/%f %p'" >>  /etc/postgresql/15/main/postgresql.conf
+
+RUN    echo "host replication replica 0.0.0.0/0 md5" >> /etc/postgresql/15/main/pg_hba.conf
+RUN    echo "host all rewind 0.0.0.0/0 md5" >> /etc/postgresql/15/main/pg_hba.conf
+
+
+RUN    mkdir /archive
+RUN    chown -R postgres:postgres /archive
+
+USER postgres
+EXPOSE 5432
+
+
+# sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+# wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
+
