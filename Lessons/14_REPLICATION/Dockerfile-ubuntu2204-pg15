@@ -33,6 +33,7 @@ RUN    echo "archive_command = 'test ! -f /archive/%f && cp %p /archive/%f'" >> 
 RUN    echo "host replication replica 0.0.0.0/0 md5" >> /etc/postgresql/15/main/pg_hba.conf
 RUN    echo "host all rewind 0.0.0.0/0 md5" >> /etc/postgresql/15/main/pg_hba.conf
 
+RUN    service postgresql restart
 
 RUN    mkdir /archive
 RUN    chown -R postgres:postgres /archive
@@ -40,7 +41,7 @@ RUN    chown -R postgres:postgres /archive
 USER postgres
 EXPOSE 5432
 
-
+# # sudo apt remove postgresql-15
 # sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 # wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
 
